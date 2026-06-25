@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BASTION — Persoonlijk Intelligentiecentrum</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="src/style.css">
+</head>
+<body>
+
+<!-- ═══════════════════ HEADER ═══════════════════ -->
+<header id="header">
+  <div class="header-brand">
+    <div class="brand-icon">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+        <polygon points="14,2 26,9 26,19 14,26 2,19 2,9" stroke="currentColor" stroke-width="1.5" fill="none" class="hex-outer"/>
+        <polygon points="14,7 21,11 21,17 14,21 7,17 7,11" fill="currentColor" opacity="0.15" class="hex-inner"/>
+        <circle cx="14" cy="14" r="3" fill="currentColor"/>
+      </svg>
+    </div>
+    <div class="brand-text">
+      <span class="brand-name">BASTION</span>
+      <span class="brand-sub">Persoonlijk Intelligentiecentrum</span>
+    </div>
+  </div>
+
+  <nav class="header-nav">
+    <button class="nav-btn active" data-tab="dashboard">Dashboard</button>
+    <button class="nav-btn" data-tab="nieuws">Nieuws</button>
+    <button class="nav-btn" data-tab="conflict">Conflicten</button>
+    <button class="nav-btn" data-tab="nl-politiek">NL Politiek</button>
+  </nav>
+
+  <div class="header-right">
+    <div class="live-indicator">
+      <span class="live-dot"></span>
+      <span>LIVE</span>
+    </div>
+    <div class="header-clock" id="clock">--:--:--</div>
+    <div class="header-date" id="date">-- --- ----</div>
+  </div>
+</header>
+
+<!-- ═══════════════════ STATUS BAR ═══════════════════ -->
+<div class="statusbar" id="statusbar">
+  <div class="status-item">
+    <span class="status-label">DREIGINGSNIVEAU</span>
+    <span class="status-value threat-substantial" id="threat-level">SUBSTANTIEEL</span>
+  </div>
+  <div class="status-sep"></div>
+  <div class="status-item">
+    <span class="status-label">WEER NEDERLAND</span>
+    <span class="status-value" id="weather-val">Laden…</span>
+  </div>
+  <div class="status-sep"></div>
+  <div class="status-item">
+    <span class="status-label">EUR/USD</span>
+    <span class="status-value" id="fx-eurusd">—</span>
+  </div>
+  <div class="status-sep"></div>
+  <div class="status-item">
+    <span class="status-label">ACTIEVE CONFLICTEN</span>
+    <span class="status-value conflict-high" id="conflict-count">—</span>
+  </div>
+  <div class="status-sep"></div>
+  <div class="status-item">
+    <span class="status-label">NIEUWS BIJGEWERKT</span>
+    <span class="status-value" id="last-update">—</span>
+  </div>
+  <div class="status-sep"></div>
+  <div class="status-item clickable" onclick="refreshAll()">
+    <span class="status-label">VERNIEUWEN</span>
+    <span class="status-value refresh-btn">↻ Nu</span>
+  </div>
+</div>
+
+<!-- ═══════════════════ MAIN CONTENT ═══════════════════ -->
+<main class="main-grid" id="main-content">
+
+  <!-- TAB: DASHBOARD -->
+  <div class="tab-panel active" id="tab-dashboard">
+
+    <!-- Row 1: 3 columns -->
+    <div class="grid-row grid-3">
+
+      <!-- COLUMN 1: NL Nieuws -->
+      <section class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <span class="card-icon">🇳🇱</span>
+            Nederland
+          </div>
+          <span class="card-badge">NOS</span>
+        </div>
+        <div class="news-list" id="feed-nos">
+          <div class="skeleton-item"></div>
+          <div class="skeleton-item"></div>
+          <div class="skeleton-item"></div>
+          <div class="skeleton-item"></div>
+        </div>
+      </section>
+
+      <!-- COLUMN 2: Wereld nieuws -->
+      <section class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <span class="card-icon">🌍</span>
+            Wereld
+          </div>
+          <span class="card-badge">BBC</span>
+        </div>
+        <div class="news-list" id="feed-bbc">
+          <div class="skeleton-item"></div>
+          <div class="skeleton-item"></div>
+          <div class="skeleton-item"></div>
+          <div class="skeleton-item"></div>
+        </div>
+      </section>
+
+      <!-- COLUMN 3: Veiligheid & Defensie -->
+      <section class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <span class="card-icon">🛡️</span>
+            Veiligheid
+          </div>
+          <span class="card-badge">Reuters</span>
+        </div>
+        <div class="news-list" id="feed-security">
+          <div class="skeleton-item"></div>
+          <div class="skeleton-item"></div>
+          <div class="skeleton-item"></div>
+          <div class="skeleton-item"></div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- Row 2: 2 columns -->
+    <div class="grid-row grid-2-1">
+
+      <!-- LEFT: Conflictmonitor -->
+      <section class="card card-tall">
+        <div class="card-header">
+          <div class="card-title">
+            <span class="card-icon">⚡</span>
+            Conflictmonitor
+          </div>
+          <span class="card-badge critical">LIVE</span>
+        </div>
+        <div class="conflict-list" id="conflict-list">
+          <!-- Populated by JS -->
+        </div>
+        <div class="conflict-footer">
+          <span class="data-source">Bron: OpenData / Wikipedia / GDELT</span>
+        </div>
+      </section>
+
+      <!-- RIGHT: Stack van 2 kaarten -->
+      <div class="card-stack">
+
+        <!-- Weer detail -->
+        <section class="card card-compact">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="card-icon">🌤️</span>
+              Weersverwachting
+            </div>
+            <span class="card-badge">Open-Meteo</span>
+          </div>
+          <div id="weather-detail" class="weather-grid">
+            <div class="skeleton-item"></div>
+          </div>
+        </section>
+
+        <!-- Snelle links / Command Center -->
+        <section class="card card-compact">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="card-icon">⚙️</span>
+              Command Center
+            </div>
+          </div>
+          <div class="quicklinks" id="quicklinks">
+            <a href="https://www.tweedekamer.nl" target="_blank" class="qlink">
+              <span class="qlink-icon">🏛️</span>
+              <span>Tweede Kamer</span>
+            </a>
+            <a href="https://nos.nl" target="_blank" class="qlink">
+              <span class="qlink-icon">📺</span>
+              <span>NOS.nl</span>
+            </a>
+            <a href="https://www.rijksoverheid.nl" target="_blank" class="qlink">
+              <span class="qlink-icon">🇳🇱</span>
+              <span>Rijksoverheid</span>
+            </a>
+            <a href="https://nctv.nl" target="_blank" class="qlink">
+              <span class="qlink-icon">🛡️</span>
+              <span>NCTV</span>
+            </a>
+            <a href="https://europa.eu/newsroom" target="_blank" class="qlink">
+              <span class="qlink-icon">🇪🇺</span>
+              <span>EU Newsroom</span>
+            </a>
+            <a href="https://www.nato.int/newsroom" target="_blank" class="qlink">
+              <span class="qlink-icon">⭐</span>
+              <span>NAVO</span>
+            </a>
+          </div>
+        </section>
+
+      </div>
+
+    </div>
+
+  </div><!-- /tab-dashboard -->
+
+
+  <!-- TAB: NIEUWS -->
+  <div class="tab-panel" id="tab-nieuws">
+    <div class="grid-row grid-3">
+      <section class="card card-tall">
+        <div class="card-header">
+          <div class="card-title"><span class="card-icon">🇳🇱</span> NOS Nieuws</div>
+        </div>
+        <div class="news-list news-list-extended" id="feed-nos-full"></div>
+      </section>
+      <section class="card card-tall">
+        <div class="card-header">
+          <div class="card-title"><span class="card-icon">🌍</span> BBC World</div>
+        </div>
+        <div class="news-list news-list-extended" id="feed-bbc-full"></div>
+      </section>
+      <section class="card card-tall">
+        <div class="card-header">
+          <div class="card-title"><span class="card-icon">📡</span> Reuters</div>
+        </div>
+        <div class="news-list news-list-extended" id="feed-reuters-full"></div>
+      </section>
+    </div>
+  </div>
+
+  <!-- TAB: CONFLICT -->
+  <div class="tab-panel" id="tab-conflict">
+    <div class="grid-row grid-2">
+      <section class="card card-tall">
+        <div class="card-header">
+          <div class="card-title"><span class="card-icon">⚡</span> Actieve Conflicten</div>
+          <span class="card-badge critical">LIVE DATA</span>
+        </div>
+        <div class="conflict-list conflict-list-full" id="conflict-list-full"></div>
+      </section>
+      <section class="card card-tall">
+        <div class="card-header">
+          <div class="card-title"><span class="card-icon">📰</span> Conflict Nieuws</div>
+        </div>
+        <div class="news-list news-list-extended" id="feed-conflict-news"></div>
+      </section>
+    </div>
+  </div>
+
+  <!-- TAB: NL POLITIEK -->
+  <div class="tab-panel" id="tab-nl-politiek">
+    <div class="grid-row grid-3">
+      <section class="card card-tall">
+        <div class="card-header">
+          <div class="card-title"><span class="card-icon">🏛️</span> Politiek Nieuws</div>
+        </div>
+        <div class="news-list news-list-extended" id="feed-politiek"></div>
+      </section>
+      <section class="card card-tall">
+        <div class="card-header">
+          <div class="card-title"><span class="card-icon">📋</span> Tweede Kamer</div>
+          <span class="card-badge">Recent</span>
+        </div>
+        <div class="news-list news-list-extended" id="feed-kamerstukken"></div>
+      </section>
+      <section class="card card-tall">
+        <div class="card-header">
+          <div class="card-title"><span class="card-icon">🛡️</span> Veiligheid & Weerbaarheid</div>
+        </div>
+        <div class="news-list news-list-extended" id="feed-veiligheid"></div>
+      </section>
+    </div>
+  </div>
+
+</main>
+
+<!-- ═══════════════════ FOOTER ═══════════════════ -->
+<footer class="footer">
+  <span>BASTION © 2026 — Persoonlijk gebruik</span>
+  <span class="footer-sep">|</span>
+  <span>Data: NOS · BBC · Reuters · Open-Meteo · GDELT</span>
+  <span class="footer-sep">|</span>
+  <span id="footer-updated">—</span>
+</footer>
+
+<script src="src/app.js"></script>
+</body>
+</html>
