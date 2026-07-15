@@ -8,6 +8,11 @@ on:
   # per week — mocht de blokkade ooit versoepelen, dan pikt de agent het op.
   schedule:
     - cron: '0 6 * * 1'   # elke maandag 06:00 UTC
+  push:
+    branches:
+      - claude/zuidplas-livestream-tool-kiz0jd
+    paths-ignore:
+      - 'data/**'
   workflow_dispatch: {}
 
 permissions:
@@ -31,9 +36,6 @@ jobs:
 
       - name: Installeer dependencies
         run: npm install --no-save
-
-      - name: Installeer Chromium browser
-        run: npx playwright install --with-deps chromium
 
       - name: Haal Zuidplas-data op
         run: node scripts/fetch-zuidplas.mjs

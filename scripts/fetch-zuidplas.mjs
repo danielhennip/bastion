@@ -1,184 +1,117 @@
-// Haalt data over de Notubiz-vergadering van gemeente Zuidplas op voor BASTION.
+// Haalt de agenda/inhoud van de Zuidplas-raadsvergadering op voor BASTION,
+// via bronnen die NIET achter de Cloudflare-botblokkade van Notubiz zitten.
 //
-// Achtergrond: de website zuidplas.notubiz.nl zit achter Cloudflare-
-// botbescherming. Vanaf een datacenter-IP (zoals een GitHub-runner) wordt
-// zowel een kale fetch als een headless browser hard geblokkeerd
-// ("Sorry, you have been blocked"). Een echte browser op een thuis-IP komt
-// er wél door — daarom werkt de embed in het dashboard voor de gebruiker.
+// Notubiz zelf (zuidplas.notubiz.nl) blokkeert alle geautomatiseerde toegang
+// (getest: HTTP 403 "you have been blocked", ook met een echte browser).
+// Maar de gemeentesite zuidplas.nl publiceert dezelfde vergaderingen in
+// gewone HTML op een ander domein, en het Internet Archive (web.archive.org)
+// bewaart snapshots. Beide zijn wél bereikbaar vanaf een GitHub-runner.
 //
-// Deze agent probeert daarom twee dingen, en logt eerlijk wat lukt:
-//   1. De publieke Notubiz-API (api.notubiz.nl) — die is meestal NIET
-//      achter dezelfde botblokkade als de frontend. Beste kans op data.
-//   2. De pagina renderen in headless Chromium + screenshot, zodat ook een
-//      AI kan zien wat er staat (of dat er een Cloudflare-blok staat).
-//
-// Schrijft:
-//   data/zuidplas.json        → gestructureerde data voor het dashboard
-//   data/zuidplas-debug.json  → ruwe vondsten (API-responses, DOM, netwerk)
-//   data/zuidplas.png         → screenshot van de gerenderde pagina
+// De agent probeert een reeks bronnen, haalt agenda-achtige tekst eruit, en
+// schrijft de beste vondst naar data/zuidplas.json (+ debug). Zo krijgt ook
+// een AI de vergaderinhoud binnen zonder de beveiliging van Notubiz te raken.
 
-import { chromium } from 'playwright';
+import * as cheerio from 'cheerio';
 import { writeFile, mkdir } from 'node:fs/promises';
 
 const MEETING_ID = process.env.ZUIDPLAS_MEETING_ID || '1391079';
-const MEETING_URL = process.env.ZUIDPLAS_MEETING_URL || `https://zuidplas.notubiz.nl/vergadering/${MEETING_ID}`;
+const NOTUBIZ_URL = `https://zuidplas.notubiz.nl/vergadering/${MEETING_ID}`;
 const OUT_DIR = 'data';
 
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36';
 
-// ── 1. Notubiz publieke API aftasten ─────────────────────────────
-// We kennen het exacte schema niet zeker, dus we proberen een reeks
-// plausibele endpoints en loggen wat werkt.
-const API_CANDIDATES = [
-  `https://api.notubiz.nl/events/meeting/${MEETING_ID}?format=json&version=1.10.0`,
-  `https://api.notubiz.nl/events/meeting/${MEETING_ID}?format=json`,
-  `https://api.notubiz.nl/events/${MEETING_ID}?format=json&version=1.10.0`,
-  `https://api.notubiz.nl/gathering/${MEETING_ID}?format=json&version=1.10.0`,
-  `https://api.notubiz.nl/meeting/${MEETING_ID}?format=json`,
-  `https://api.notubiz.nl/events/meeting/${MEETING_ID}`,
+// Bronnen op bereikbare hosts (zuidplas.nl + web.archive.org).
+const SOURCES = [
+  { label: 'zuidplas-agenda-index',   url: 'https://www.zuidplas.nl/agenda-gemeenteraad' },
+  { label: 'zuidplas-vergaderingen',  url: 'https://www.zuidplas.nl/vergaderingen-gemeenteraad' },
+  { label: 'zuidplas-besluitenlijst', url: 'https://www.zuidplas.nl/besluitenlijsten-gemeenteraad' },
+  { label: 'zuidplas-14-juli-2026',   url: 'https://www.zuidplas.nl/raadsvergadering-14-juli-2026' },
+  { label: 'zuidplas-6-juli-2026',    url: 'https://www.zuidplas.nl/raadsvergadering-6-juli-2026' },
+  { label: 'wayback-notubiz',         url: `https://web.archive.org/web/2id_/${NOTUBIZ_URL}` },
 ];
 
-async function probeApi() {
-  const results = [];
-  for (const url of API_CANDIDATES) {
-    try {
-      const r = await fetch(url, {
-        headers: { 'User-Agent': UA, 'Accept': 'application/json,*/*' },
-        signal: AbortSignal.timeout(15000),
-      });
-      const text = await r.text();
-      let json = null;
-      try { json = JSON.parse(text); } catch {}
-      results.push({
-        url,
-        status: r.status,
-        contentType: r.headers.get('content-type') || '',
-        isJson: !!json,
-        length: text.length,
-        preview: text.slice(0, 600),
-        json: json && typeof json === 'object' ? json : null,
-      });
-      // Stop bij de eerste bruikbare JSON-hit.
-      if (r.ok && json) break;
-    } catch (e) {
-      results.push({ url, error: String((e && e.message) || e) });
-    }
-  }
-  return results;
+async function fetchHtml(url) {
+  const r = await fetch(url, {
+    headers: {
+      'User-Agent': UA,
+      'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+      'Accept-Language': 'nl-NL,nl;q=0.9,en;q=0.8',
+    },
+    redirect: 'follow',
+    signal: AbortSignal.timeout(25000),
+  });
+  const text = await r.text();
+  return { status: r.status, ok: r.ok, finalUrl: r.url, text };
 }
 
-function agendaFromApiJson(json) {
-  // Best-effort: zoek in willekeurige Notubiz-JSON naar agenda-achtige titels.
-  const out = [];
-  const visit = (node, depth) => {
-    if (!node || depth > 6) return;
-    if (Array.isArray(node)) { node.forEach(n => visit(n, depth + 1)); return; }
-    if (typeof node === 'object') {
-      const t = node.title || node.name || node.subject || node.description;
-      if (typeof t === 'string' && t.trim().length > 3 && t.trim().length < 220) {
-        out.push(t.trim());
-      }
-      Object.values(node).forEach(v => visit(v, depth + 1));
-    }
-  };
-  visit(json, 0);
-  return Array.from(new Set(out)).slice(0, 80);
-}
-
-// ── 2. Pagina renderen in headless Chromium ─────────────────────
-async function renderPage() {
-  const browser = await chromium.launch({
-    args: ['--no-sandbox', '--disable-blink-features=AutomationControlled'],
-  });
-  const context = await browser.newContext({
-    userAgent: UA,
-    locale: 'nl-NL',
-    viewport: { width: 1440, height: 2200 },
-    timezoneId: 'Europe/Amsterdam',
-  });
-
-  const networkVideo = new Set();
-  context.on('request', req => {
-    const u = req.url();
-    if (/\.m3u8|\.mpd|mistserver|companywebcast|player\.|vimeo|youtube|stream/i.test(u)) networkVideo.add(u);
-  });
-
-  const page = await context.newPage();
-  const out = { pageTitle: '', cloudflareBlocked: false, status: 'unknown', extracted: null, networkVideo: [] };
-
-  try {
-    const resp = await page.goto(MEETING_URL, { waitUntil: 'domcontentloaded', timeout: 45000 });
-    out.status = resp ? `http-${resp.status()}` : 'no-response';
-    await page.waitForTimeout(6000);
-    try { await page.waitForLoadState('networkidle', { timeout: 15000 }); } catch {}
-
-    out.pageTitle = await page.title().catch(() => '');
-    out.cloudflareBlocked = /just a moment|attention required|you have been blocked|cloudflare/i.test(out.pageTitle);
-
-    await page.screenshot({ path: `${OUT_DIR}/zuidplas.png`, fullPage: true }).catch(() => {});
-
-    out.extracted = await page.evaluate(() => {
-      const agenda = [];
-      const seen = new Set();
-      ['[class*="agenda" i] li', '[class*="agenda" i] a', 'ol li', 'ul li a', '[class*="punt" i]'].forEach(sel => {
-        document.querySelectorAll(sel).forEach(el => {
-          const t = (el.textContent || '').replace(/\s+/g, ' ').trim();
-          if (t && t.length > 3 && t.length < 220 && !seen.has(t)) { seen.add(t); agenda.push(t); }
-        });
-      });
-      return {
-        title: (document.querySelector('h1,h2')?.textContent || document.title || '').replace(/\s+/g, ' ').trim(),
-        agenda: agenda.slice(0, 80),
-        iframeSrcs: Array.from(document.querySelectorAll('iframe')).map(f => f.src).filter(Boolean),
-        bodyTextPreview: (document.body?.innerText || '').replace(/\s+/g, ' ').trim().slice(0, 2000),
-      };
+function extractAgenda($) {
+  const items = new Set();
+  const selectors = [
+    '[class*="agenda" i] li',
+    '[class*="agenda" i] a',
+    '.agendapunt, [class*="agendapunt" i]',
+    'main ol li',
+    'main ul li',
+    'article li',
+  ];
+  for (const sel of selectors) {
+    $(sel).each((_, el) => {
+      const t = $(el).text().replace(/\s+/g, ' ').trim();
+      if (t && t.length > 3 && t.length < 220) items.add(t);
     });
-    out.networkVideo = Array.from(networkVideo).slice(0, 30);
-  } catch (e) {
-    out.status = 'error';
-    out.error = String((e && e.message) || e);
-    await page.screenshot({ path: `${OUT_DIR}/zuidplas.png`, fullPage: true }).catch(() => {});
-  } finally {
-    await browser.close();
   }
-  return out;
+  return Array.from(items).slice(0, 80);
 }
 
 async function main() {
   await mkdir(OUT_DIR, { recursive: true });
 
-  const api = await probeApi();
-  const render = await renderPage();
+  const attempts = [];
+  let best = null;
 
-  const apiHit = api.find(r => r.isJson && r.status >= 200 && r.status < 300);
+  for (const src of SOURCES) {
+    try {
+      const res = await fetchHtml(src.url);
+      const blocked = /you have been blocked|attention required|just a moment/i.test(res.text.slice(0, 3000));
+      let title = null, agenda = [], textPreview = '';
+      if (res.ok && !blocked) {
+        const $ = cheerio.load(res.text);
+        title = ($('h1').first().text() || $('title').text() || '').replace(/\s+/g, ' ').trim();
+        agenda = extractAgenda($);
+        textPreview = $('main').text().replace(/\s+/g, ' ').trim().slice(0, 1200)
+          || $('body').text().replace(/\s+/g, ' ').trim().slice(0, 1200);
+      }
+      const attempt = {
+        label: src.label, url: src.url, status: res.status, finalUrl: res.finalUrl,
+        blocked, title, agendaCount: agenda.length, textPreview,
+      };
+      attempts.push({ ...attempt, agenda });
+      if (!best && res.ok && !blocked && (agenda.length > 0 || textPreview.length > 200)) {
+        best = { source: src.label, url: src.finalUrl || src.url, title, agenda, textPreview };
+      }
+    } catch (e) {
+      attempts.push({ label: src.label, url: src.url, error: String((e && e.message) || e) });
+    }
+  }
 
   const result = {
     fetchedAt: new Date().toISOString(),
-    sourceUrl: MEETING_URL,
     meetingId: MEETING_ID,
-    // Voorkeur: API-data; anders wat de browser rende (indien niet geblokkeerd).
-    dataSource: apiHit ? 'notubiz-api' : (render.cloudflareBlocked ? 'blocked' : 'browser'),
-    title: (apiHit && (apiHit.json.title || apiHit.json.name)) || render.extracted?.title || null,
-    status: apiHit ? `api-${apiHit.status}` : render.status,
-    cloudflareBlocked: render.cloudflareBlocked,
-    agenda: apiHit ? agendaFromApiJson(apiHit.json) : (render.extracted?.agenda || []),
-    videoLinks: render.networkVideo || [],
-    iframeSrcs: render.extracted?.iframeSrcs || [],
+    notubizUrl: NOTUBIZ_URL,
+    dataSource: best ? best.source : 'none',
+    title: best ? best.title : null,
+    agenda: best ? best.agenda : [],
+    textPreview: best ? best.textPreview : null,
+    note: best
+      ? 'Data via een bereikbare bron (zuidplas.nl / web.archive.org). Notubiz zelf blokkeert automatische toegang.'
+      : 'Geen bereikbare bron leverde bruikbare inhoud; Notubiz blokkeert automatische toegang.',
   };
 
-  const debug = { fetchedAt: result.fetchedAt, api, render };
-
   await writeFile(`${OUT_DIR}/zuidplas.json`, JSON.stringify(result, null, 2) + '\n');
-  await writeFile(`${OUT_DIR}/zuidplas-debug.json`, JSON.stringify(debug, null, 2) + '\n');
+  await writeFile(`${OUT_DIR}/zuidplas-debug.json`, JSON.stringify({ fetchedAt: result.fetchedAt, attempts }, null, 2) + '\n');
 
-  console.log(
-    `Klaar. dataSource=${result.dataSource} status=${result.status} ` +
-    `cloudflareBlocked=${result.cloudflareBlocked} apiHit=${!!apiHit} ` +
-    `agendapunten=${result.agenda.length} video=${result.videoLinks.length}`
-  );
+  console.log(`Klaar. dataSource=${result.dataSource} title=${JSON.stringify(result.title)} agendapunten=${result.agenda.length}`);
+  attempts.forEach(a => console.log(`  ${a.label}: status=${a.status ?? a.error} blocked=${a.blocked} agenda=${a.agendaCount ?? 0}`));
 }
 
-main().catch(err => {
-  console.error(err);
-  process.exitCode = 1;
-});
+main().catch(err => { console.error(err); process.exitCode = 1; });

@@ -7,6 +7,6 @@
     "fetch:zuidplas": "node scripts/fetch-zuidplas.mjs"
   },
   "dependencies": {
-    "playwright": "^1.48.0"
+    "cheerio": "^1.0.0"
   }
 }
