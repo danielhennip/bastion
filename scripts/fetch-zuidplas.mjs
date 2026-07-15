@@ -1,94 +1,24 @@
-// Haalt de Notubiz-vergaderpagina van gemeente Zuidplas op en zet er
-// zo veel mogelijk bruikbare data uit in data/zuidplas.json voor BASTION.
+// Rendert de Notubiz-vergaderpagina van gemeente Zuidplas in een échte
+// (headless) Chromium en haalt er data uit voor BASTION.
 //
-// Draait als GitHub Action (onbeperkte netwerktoegang, i.t.t. de Claude-
-// sandbox die notubiz.nl blokkeert). Schrijft daarnaast data/zuidplas-debug.json
-// met ruwe vondsten, zodat het parseergedeelte hieronder later — zonder dat
-// iemand de site handmatig hoeft te inspecteren — bijgesteld kan worden aan
-// de hand van wat er daadwerkelijk binnenkomt.
+// Waarom een browser i.p.v. een kale fetch? Notubiz zit achter Cloudflare-
+// botbescherming: een gewone HTTP-request krijgt "Attention Required! |
+// Cloudflare" (HTTP 403). Een echte browser doorstaat die controle wél —
+// net als de browser van de gebruiker.
+//
+// Draait als GitHub Action (onbeperkte netwerktoegang). Schrijft:
+//   data/zuidplas.json        → gestructureerde data voor het dashboard
+//   data/zuidplas-debug.json  → ruwe vondsten om de parser bij te stellen
+//   data/zuidplas.png         → screenshot van de gerenderde pagina, zodat
+//                               ook een AI de vergaderpagina kan "bekijken"
 
-import * as cheerio from 'cheerio';
+import { chromium } from 'playwright';
 import { writeFile, mkdir } from 'node:fs/promises';
 
 const MEETING_URL = process.env.ZUIDPLAS_MEETING_URL || 'https://zuidplas.notubiz.nl/vergadering/1391079';
-const PORTAL_URL = 'https://zuidplas.notubiz.nl/';
 const OUT_DIR = 'data';
 
-const HEADERS = {
-  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36',
-  'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-  'Accept-Language': 'nl-NL,nl;q=0.9,en;q=0.8',
-};
-
-async function fetchHtml(url) {
-  const res = await fetch(url, { headers: HEADERS, redirect: 'follow', signal: AbortSignal.timeout(20000) });
-  const text = await res.text();
-  return { status: res.status, ok: res.ok, text, finalUrl: res.url };
-}
-
-function extractCandidates($, html) {
-  const title = $('title').first().text().trim()
-    || $('meta[property="og:title"]').attr('content')
-    || null;
-
-  const description = $('meta[property="og:description"]').attr('content')
-    || $('meta[name="description"]').attr('content')
-    || null;
-
-  // Veel Notubiz-installaties zijn een SPA; probeer bekende data-bootstrap-patronen te vinden.
-  const embeddedJsonBlocks = [];
-  $('script').each((_, el) => {
-    const id = $(el).attr('id') || '';
-    const type = $(el).attr('type') || '';
-    const body = $(el).html() || '';
-    const head = (id + ' ' + type + ' ' + body.slice(0, 200)).toLowerCase();
-    if (/__next_data__|__nuxt__|initial[-_]?state|window\.__|application\/json/.test(head)) {
-      embeddedJsonBlocks.push({ id, type, length: body.length, preview: body.slice(0, 800) });
-    }
-  });
-
-  // Kandidaat-agendapunten via veelvoorkomende klassenpatronen.
-  const agendaSelectors = [
-    '[class*="agenda" i] li',
-    '[class*="agenda" i] a',
-    '[class*="punt" i]',
-    '[id*="agenda" i] li',
-    'li[class*="item" i]',
-  ];
-  const agendaCandidates = new Set();
-  for (const sel of agendaSelectors) {
-    $(sel).each((_, el) => {
-      const t = $(el).text().replace(/\s+/g, ' ').trim();
-      if (t && t.length > 3 && t.length < 200) agendaCandidates.add(t);
-    });
-  }
-
-  // Kandidaat video/livestream-bronnen.
-  const videoLinks = new Set();
-  const patterns = [
-    /https?:\/\/[^\s"'<>]+\.m3u8[^\s"'<>]*/gi,
-    /https?:\/\/[^\s"'<>]*(mistserver|vimeo|youtube|notubiz-media|player)[^\s"'<>]*/gi,
-  ];
-  for (const p of patterns) {
-    const matches = html.match(p) || [];
-    matches.forEach(m => videoLinks.add(m));
-  }
-  const iframeSrcs = new Set();
-  $('iframe').each((_, el) => {
-    const s = $(el).attr('src');
-    if (s) iframeSrcs.add(s);
-  });
-
-  return {
-    title,
-    description,
-    embeddedJsonBlocks: embeddedJsonBlocks.slice(0, 10),
-    agendaCandidates: Array.from(agendaCandidates).slice(0, 60),
-    videoLinks: Array.from(videoLinks).slice(0, 10),
-    iframeSrcs: Array.from(iframeSrcs).slice(0, 10),
-    bodyTextPreview: $('body').text().replace(/\s+/g, ' ').trim().slice(0, 1500),
-  };
-}
+const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36';
 
 async function main() {
   await mkdir(OUT_DIR, { recursive: true });
@@ -98,42 +28,118 @@ async function main() {
     sourceUrl: MEETING_URL,
     title: null,
     status: 'unknown',
+    cloudflareBlocked: false,
     agenda: [],
     videoLinks: [],
     iframeSrcs: [],
     error: null,
   };
-  const debug = { fetchedAt: result.fetchedAt, meeting: null, portal: null };
+  const debug = { fetchedAt: result.fetchedAt };
+
+  const browser = await chromium.launch({
+    args: ['--no-sandbox', '--disable-blink-features=AutomationControlled'],
+  });
+  const context = await browser.newContext({
+    userAgent: UA,
+    locale: 'nl-NL',
+    viewport: { width: 1440, height: 2200 },
+    timezoneId: 'Europe/Amsterdam',
+  });
+
+  // Verzamel netwerk-URL's die op een videostream lijken.
+  const networkVideo = new Set();
+  context.on('request', req => {
+    const u = req.url();
+    if (/\.m3u8|\.mpd|mistserver|companywebcast|player\.|vimeo|youtube|stream/i.test(u)) {
+      networkVideo.add(u);
+    }
+  });
+
+  const page = await context.newPage();
 
   try {
-    const meeting = await fetchHtml(MEETING_URL);
-    const $m = cheerio.load(meeting.text);
-    const info = extractCandidates($m, meeting.text);
-    debug.meeting = { httpStatus: meeting.status, finalUrl: meeting.finalUrl, ...info };
+    const resp = await page.goto(MEETING_URL, { waitUntil: 'domcontentloaded', timeout: 45000 });
+    result.status = resp ? `http-${resp.status()}` : 'no-response';
 
-    result.title = info.title;
-    result.agenda = info.agendaCandidates;
-    result.videoLinks = info.videoLinks;
-    result.iframeSrcs = info.iframeSrcs;
-    result.status = meeting.ok ? 'fetched' : `http-${meeting.status}`;
+    // Geef Cloudflare + de SPA tijd om te laden.
+    await page.waitForTimeout(6000);
+    try { await page.waitForLoadState('networkidle', { timeout: 15000 }); } catch {}
+
+    const pageTitle = await page.title().catch(() => '');
+    result.cloudflareBlocked = /just a moment|attention required|cloudflare/i.test(pageTitle);
+
+    // Screenshot van de volledige pagina — dit is wat een AI kan "bekijken".
+    await page.screenshot({ path: `${OUT_DIR}/zuidplas.png`, fullPage: true }).catch(() => {});
+
+    // Extractie uit de gerenderde DOM.
+    const extracted = await page.evaluate(() => {
+      const clean = s => (s || '').replace(/\s+/g, ' ').trim();
+
+      const title =
+        document.querySelector('h1, h2, .meeting-title, [class*="title" i]')?.textContent?.trim()
+        || document.title
+        || null;
+
+      const agenda = [];
+      const seen = new Set();
+      const selectors = [
+        '[class*="agenda" i] li',
+        '[class*="agenda" i] a',
+        'ol li',
+        'ul li a',
+        '[class*="point" i]',
+        '[class*="punt" i]',
+      ];
+      for (const sel of selectors) {
+        document.querySelectorAll(sel).forEach(el => {
+          const t = (el.textContent || '').replace(/\s+/g, ' ').trim();
+          if (t && t.length > 3 && t.length < 220 && !seen.has(t)) {
+            seen.add(t);
+            agenda.push(t);
+          }
+        });
+      }
+
+      const iframeSrcs = Array.from(document.querySelectorAll('iframe'))
+        .map(f => f.src).filter(Boolean);
+      const videoSrcs = Array.from(document.querySelectorAll('video, video source'))
+        .map(v => v.src || v.currentSrc).filter(Boolean);
+
+      return {
+        title: clean(title),
+        agenda: agenda.slice(0, 80),
+        iframeSrcs,
+        videoSrcs,
+        bodyTextPreview: (document.body?.innerText || '').replace(/\s+/g, ' ').trim().slice(0, 2000),
+      };
+    });
+
+    result.title = extracted.title;
+    result.agenda = extracted.agenda;
+    result.iframeSrcs = extracted.iframeSrcs;
+    result.videoLinks = Array.from(new Set([...extracted.videoSrcs, ...networkVideo])).slice(0, 15);
+
+    debug.pageTitle = pageTitle;
+    debug.extracted = extracted;
+    debug.networkVideo = Array.from(networkVideo).slice(0, 30);
   } catch (e) {
     result.error = String((e && e.message) || e);
     result.status = 'error';
-    debug.meetingError = result.error;
-  }
-
-  try {
-    const portal = await fetchHtml(PORTAL_URL);
-    const $p = cheerio.load(portal.text);
-    debug.portal = { httpStatus: portal.status, finalUrl: portal.finalUrl, ...extractCandidates($p, portal.text) };
-  } catch (e) {
-    debug.portalError = String((e && e.message) || e);
+    debug.error = result.error;
+    // Probeer alsnog een screenshot van wat er wél staat.
+    await page.screenshot({ path: `${OUT_DIR}/zuidplas.png`, fullPage: true }).catch(() => {});
+  } finally {
+    await browser.close();
   }
 
   await writeFile(`${OUT_DIR}/zuidplas.json`, JSON.stringify(result, null, 2) + '\n');
   await writeFile(`${OUT_DIR}/zuidplas-debug.json`, JSON.stringify(debug, null, 2) + '\n');
 
-  console.log(`Klaar. status=${result.status} title=${result.title} agendapunten=${result.agenda.length}`);
+  console.log(
+    `Klaar. status=${result.status} cloudflareBlocked=${result.cloudflareBlocked} ` +
+    `title=${JSON.stringify(result.title)} agendapunten=${result.agenda.length} ` +
+    `video=${result.videoLinks.length} iframes=${result.iframeSrcs.length}`
+  );
 }
 
 main().catch(err => {

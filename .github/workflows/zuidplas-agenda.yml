@@ -38,6 +38,9 @@ jobs:
       - name: Installeer dependencies
         run: npm install --no-save
 
+      - name: Installeer Chromium browser
+        run: npx playwright install --with-deps chromium
+
       - name: Haal Zuidplas-data op
         run: node scripts/fetch-zuidplas.mjs
 
