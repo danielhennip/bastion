@@ -13,3 +13,11 @@ en toont het dashboard "OFFLINE".
 
 **[17:18:26]** Geer verzieningen, parkeer normen, goede woningbouwplemmen, plannen belemmeren, of zelfs onmogelijk maken. En natuurlijk moeten we zorg voor voldoende parkeergelegenheid. Maar waar maatwerk mogelijk is, moeten we dat ook deur vertoepassen. Zeker bij woningen, verstatters, senioren, flexwoningen en locaties die goed bereikbaar zijn, met openbaar vervoer of de fiets. Iedere woning die daardoor wel gereleiseerd kan worden, betekent een extra kans voor een inwoner die nu nog wacht op een passende woning.
 
+
+
+## Sessie gestart 15-7-2026, 21:53:39
+
+**[21:53:39]** Voor onze dorp. Als huidplas groeit moeten woningen, voorzingen en bereikbaarheid gelijk enthouden. Door de perfecte ruimte in onze dorp zijn de mogelijkheden om nieuwe wegen aan te leggen, vrijwel uitgeput. De bereikbaarheid van Zuidplas kunnen we niet blijven oplossen met extra asfalt. Daarom moeten een nieuw truinstation, hoogwaardige en veilige fietsbindingen tussen onze dorpen, scholen, sportverzieningen, winkels.
+
+**[21:54:09]** De gemeenteraad en omliggende stations een hoge prioriteit te krijgen. Meneer we investeren in een openbaar voer en de fiets ontstaat ook meer ruimte om bij woningbouw slimmer met paqueren om te gaan. Zo versterken mobiliteit en woningbouw elkaar in plaats van elkaar te blokeren. Een steeds grote deel van onze publieke middelen wordt besteed via verbonden betijen. juist nu de financiële ruimte steeds kleiner wordt, is het belangrijk dat iedere euro die vriendjaar verbonden.
+
