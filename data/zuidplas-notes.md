@@ -1,12 +1,12 @@
-<!-- bijgewerkt: 2026-07-15T20:02:30Z -->
-<!-- transcript-offset: 4092 -->
+<!-- bijgewerkt: 2026-07-15T20:12:00Z -->
+<!-- transcript-offset: 5382 -->
 
 # AI-aantekeningen — raadsvergadering (opname, gevolgd 15-7-2026)
 
 ## Nu besproken
-Afronding van het betoog: oproep aan de raad om vóór het eigen pakket van
-ca. tien ingediende moties te stemmen — "inwoners vragen geen gemeente die
-vooral belooft, ze vragen een gemeente die levert."
+D66 is begonnen aan zijn bijdrage over de zomernota, met focus op de
+financiën: het begrotingstekort loopt op tot € 7,6 miljoen. (De brug is
+daarna gestopt — dit was een testfragment.)
 
 ## Samenvatting tot nu toe
 
@@ -39,7 +39,19 @@ goed genoeg.
 motie over de zichtbaarheid en herkenbaarheid van de graven van KNIL-
 militairen; de fractie wil horen welke concrete stappen inmiddels zijn gezet.
 
-### Afronding betoog: stem voor de moties
+### D66: zomernota en financiën
+[21:56–21:57] D66 opent zijn bijdrage: dit is de eerste zomernota van het
+nieuwe college; de echte keuzes komen bij de begroting en die ruimte geeft
+D66 graag. Over de cijfers: voor het derde jaar op rij sluit Zuidplas af
+met negatieve cijfers; met deze zomernota loopt het begrotingstekort op
+tot € 7,6 miljoen, en het beeld verslechtert verder in alle jaren tot en
+met 2030. Na verwerking van de meicirculaire wordt het iets gunstiger,
+maar ook dan blijft er een tekort (jaartal onduidelijk in transcript).
+Genoemde oorzaken: (1) het gemeentefonds — de rijksbijdrage is structureel
+onzekerder geworden, extra lastig voor een snelgroeiende gemeente; (2) het
+sociaal domein (zin breekt af in transcript).
+
+### Afronding betoog eerste fractie: stem voor de moties
 [21:56] De fractie heeft ca. tien moties ingediend en vraagt de raad om
 steun: de moties versterken elkaar, zorgen voor gezondere gemeentefinanciën,
 versnellen de uitvoering van prioriteiten en vergroten de kans op een
