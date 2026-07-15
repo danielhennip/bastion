@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-07-15T13:58:44.107Z",
+  "fetchedAt": "2026-07-15T15:00:28.070Z",
   "meetingId": "1391079",
   "notubizUrl": "https://zuidplas.notubiz.nl/vergadering/1391079",
   "dataSource": "raadsvergadering-14-juli-2026",
@@ -65,7 +65,7 @@
   "latestDecisions": {
     "label": "Besluitenlijst gemeenteraad Zuidplas 6 juli 2026(PDF, 84 kB)",
     "url": "https://cuatro.sim-cdn.nl/zuidplas/uploads/Besluitenlijst%20gemeenteraad%20Zuidplas%206%20juli%202026_0.pdf?cb=O-0K26y4",
-    "textPreview": ""
+    "textPreview": "* Z26.003447* D 394 – Z26.003447 Besluitenlijst van de raadsvergadering d.d. 6 juli 2026 1. Raadsvoorstel Benoeming wethouders gemeente Zuidplas (R26.000062) De raad heeft middels een schriftelijke stemming ingestemd met het benoemen van wethouder van de gemeente Zuidplas (in alfabetische volgorde): a. De heer F. Klovert b. Mevrouw E.M. Meppelink c. De heer J.W. Schuurman d. De heer F.G. van Wijnen Stemming: Het raadsvoorstel is middels een schriftelijke stemming aangenomen."
   },
   "note": "Inhoud via zuidplas.nl (bereikbaar). De volledige live-agenda en gesproken vergadering staan op Notubiz, dat automatische toegang blokkeert — gebruik daarvoor de live-brug (tools/live-bridge)."
 }
