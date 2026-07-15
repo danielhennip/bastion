@@ -23,3 +23,7 @@ en toont het dashboard "OFFLINE".
 
 **[21:54:39]** Op betij wordt besteed, ook sichtbaar bijdraagd aan de doelen die wij als raad hebben vastgesteld. Dat vraagt om een gemeenteraad die eerder kan sturen, beter wordt geïnfemeerd en dat werkelijk gip houdt op publiekken middelen. Democratiekantrollen is geen doel op zich, maar een voorwaarde voor goed bestuur. Goede uitvoering zit ook in de manier waarop inwoners en overrijden. overheid ervaren. Dat zien we bij de groene kaart. Een waardevolle instrument, maar het werkt al Volging
 
+**[21:55:39]** Over de zichtbaarheid en herkenbaarheid van de graven van extra knil militairen inmiddels is gevoerd. Deze motie werd bered worden raad gestuurd en we horen graag, welke concrete stappen inmiddels zijn gezet. De ingediende motie van ons versterk elkaar, ze zorgen voor gezonder gemeentefinanciën, versnellende uitvoering van prioriteiten, vergroten de kans op een passende woning, voor status, en sputshokers en helpen de kosten natures.
+
+**[21:56:09]** Het is belangrijk. Koncret vragen wij vandaag gestun voor de moties die wij hebben ingediend, zijn er een tiental. En deze moties zijn geen doel op zich. Ze zijn een uitnodiging aan de hele raad om de samenwerking van de afgelopen weken om te zetten in concrete besluiten en zichtbare resultaten. Onze inwoners vragen geen gemeente die vooral belooft, ze vragen een gemeente die levert.
+

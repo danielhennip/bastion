@@ -1,7 +1,7 @@
 {
-  "updatedAt": "2026-07-15T19:59:03.291Z",
-  "running": true,
+  "updatedAt": "2026-07-15T20:00:46.429Z",
+  "running": false,
   "chunkSeconds": 30,
-  "chunksDone": 3,
+  "chunksDone": 5,
   "model": "whisper-base (lokaal)"
 }
