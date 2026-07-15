@@ -27,3 +27,9 @@ en toont het dashboard "OFFLINE".
 
 **[21:56:09]** Het is belangrijk. Koncret vragen wij vandaag gestun voor de moties die wij hebben ingediend, zijn er een tiental. En deze moties zijn geen doel op zich. Ze zijn een uitnodiging aan de hele raad om de samenwerking van de afgelopen weken om te zetten in concrete besluiten en zichtbare resultaten. Onze inwoners vragen geen gemeente die vooral belooft, ze vragen een gemeente die levert.
 
+**[21:56:39]** Dank je wel. Dan gaat het hoort naar D66-D-raaderen. Dank je voorzitter. Voel ons ligt de eerste zomernota van dit nieuwe colletje. We realiseren ons dat dit een de emotioneerbelijksarmstuk is.
+
+**[21:57:09]** De echte keuze komen terug bij de begroting. Dat begrijpen we en die ruimte geven we ook graag. Ik zoem in mijn bijdrage eerst in op de financiën. Daarna geven we twee zorgen mee over waar we onvolgens ons ills of volgen mee moeten omgaan. Vervolgens gaan we kort in op de inhoud en sluiten ik af. Laten we bij de cijfers beginnen. Voor het derde jaar op reis sluit Zuidplas een rekening af met negatieve cijfers. Met deze zomernota loopt het begrotingselder op tot een tekort van 7,6 miljoen euro.
+
+**[21:57:39]** Daarna verslecht het financiële beeld verder, met de kort in alle jaren tot de met 2030. Naverwerking van de mei-siculaire wordt het beeld wel eens wat iets gunstiger, maar ook dan blijft er in 2019 nog een tekort bestaan. Maar hoe komen we in deze situatie? Het is een aantal keer genoemd? Allereerst het gemeentevonds. De rijkspijdragen aan een gemeent is de afgelopen periode strukturel onzekerder geworden en voor Zuidplas als na de hoge gemeente noglastiger. Het tweede punt is het sociale domain. De strukturele effecten uit de Ski juichen.
+
