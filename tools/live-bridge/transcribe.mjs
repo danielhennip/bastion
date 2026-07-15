@@ -40,11 +40,14 @@ const DO_PUSH = process.env.PUSH === '1';
 const FFMPEG_FORMAT = process.env.FFMPEG_FORMAT || 'pulse';
 const FFMPEG_INPUT = process.env.FFMPEG_INPUT || 'default';
 
-// Transcriptie: whisper.cpp (WHISPER_CPP + WHISPER_MODEL) of OpenAI (OPENAI_API_KEY).
+// Transcriptie: whisper.cpp (WHISPER_CPP + WHISPER_MODEL), OpenAI (OPENAI_API_KEY),
+// of gratis lokaal via het Python-pakket 'openai-whisper' (LOCAL_WHISPER=1).
 const WHISPER_CPP = process.env.WHISPER_CPP;
 const WHISPER_MODEL = process.env.WHISPER_MODEL;
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const OPENAI_MODEL = process.env.OPENAI_MODEL || 'whisper-1';
+const LOCAL_WHISPER = process.env.LOCAL_WHISPER === '1';
+const LOCAL_WHISPER_MODEL_SIZE = process.env.WHISPER_MODEL_SIZE || 'base';
 
 function log(...a) { console.log(new Date().toLocaleTimeString('nl-NL'), ...a); }
 
@@ -92,10 +95,25 @@ async function transcribeOpenAI(wavPath) {
   return (j.text || '').trim();
 }
 
+async function transcribeLocalWhisper(wavPath) {
+  // Gratis, lokaal: het Python-pakket 'openai-whisper' (pip install openai-whisper).
+  // Schrijft <basename>.txt in de opgegeven output-map.
+  const outDir = dirname(wavPath);
+  await execFileP('whisper', [
+    wavPath, '--model', LOCAL_WHISPER_MODEL_SIZE, '--language', 'nl',
+    '--output_format', 'txt', '--output_dir', outDir, '--fp16', 'False',
+  ], { maxBuffer: 1024 * 1024 * 64 });
+  const base = wavPath.replace(/\.wav$/i, '');
+  const txt = await readFile(base + '.txt', 'utf8').catch(() => '');
+  await unlink(base + '.txt').catch(() => {});
+  return txt.trim();
+}
+
 async function transcribe(wavPath) {
   if (WHISPER_CPP && WHISPER_MODEL) return transcribeWhisperCpp(wavPath);
   if (OPENAI_API_KEY) return transcribeOpenAI(wavPath);
-  throw new Error('Geen transcriptie-optie: zet WHISPER_CPP+WHISPER_MODEL of OPENAI_API_KEY.');
+  if (LOCAL_WHISPER) return transcribeLocalWhisper(wavPath);
+  throw new Error('Geen transcriptie-optie: zet WHISPER_CPP+WHISPER_MODEL, OPENAI_API_KEY, of LOCAL_WHISPER=1.');
 }
 
 async function gitPush() {
