@@ -21,3 +21,5 @@ en toont het dashboard "OFFLINE".
 
 **[21:54:09]** De gemeenteraad en omliggende stations een hoge prioriteit te krijgen. Meneer we investeren in een openbaar voer en de fiets ontstaat ook meer ruimte om bij woningbouw slimmer met paqueren om te gaan. Zo versterken mobiliteit en woningbouw elkaar in plaats van elkaar te blokeren. Een steeds grote deel van onze publieke middelen wordt besteed via verbonden betijen. juist nu de financiële ruimte steeds kleiner wordt, is het belangrijk dat iedere euro die vriendjaar verbonden.
 
+**[21:54:39]** Op betij wordt besteed, ook sichtbaar bijdraagd aan de doelen die wij als raad hebben vastgesteld. Dat vraagt om een gemeenteraad die eerder kan sturen, beter wordt geïnfemeerd en dat werkelijk gip houdt op publiekken middelen. Democratiekantrollen is geen doel op zich, maar een voorwaarde voor goed bestuur. Goede uitvoering zit ook in de manier waarop inwoners en overrijden. overheid ervaren. Dat zien we bij de groene kaart. Een waardevolle instrument, maar het werkt al Volging
+
