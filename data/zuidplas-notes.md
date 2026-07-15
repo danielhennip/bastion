@@ -1,12 +1,12 @@
-<!-- bijgewerkt: 2026-07-15T20:00:30Z -->
-<!-- transcript-offset: 3234 -->
+<!-- bijgewerkt: 2026-07-15T20:02:30Z -->
+<!-- transcript-offset: 4092 -->
 
 # AI-aantekeningen — raadsvergadering (opname, gevolgd 15-7-2026)
 
 ## Nu besproken
-Verbonden partijen en democratische controle: de raad moet eerder kunnen
-sturen, beter geïnformeerd worden en grip houden op publieke middelen; net
-gestart over de "groene kaart" als instrument voor inwoners.
+Afronding van het betoog: oproep aan de raad om vóór het eigen pakket van
+ca. tien ingediende moties te stemmen — "inwoners vragen geen gemeente die
+vooral belooft, ze vragen een gemeente die levert."
 
 ## Samenvatting tot nu toe
 
@@ -32,7 +32,20 @@ bestuur."
 ### Dienstverlening / groene kaart
 [21:55] Goede uitvoering zit ook in hoe inwoners de overheid ervaren; de
 "groene kaart" wordt genoemd als waardevol instrument, maar werkt nog niet
-goed (zin loopt door in volgend blok).
+goed genoeg.
+
+### Eerdere motie graven KNIL-militairen
+[21:55] Verwijzing naar een eerder aangenomen/aan het college gestuurde
+motie over de zichtbaarheid en herkenbaarheid van de graven van KNIL-
+militairen; de fractie wil horen welke concrete stappen inmiddels zijn gezet.
+
+### Afronding betoog: stem voor de moties
+[21:56] De fractie heeft ca. tien moties ingediend en vraagt de raad om
+steun: de moties versterken elkaar, zorgen voor gezondere gemeentefinanciën,
+versnellen de uitvoering van prioriteiten en vergroten de kans op een
+passende woning voor starters en spoedzoekers. "Ze zijn een uitnodiging aan
+de hele raad om de samenwerking van de afgelopen weken om te zetten in
+concrete besluiten en zichtbare resultaten."
 
 ### Eerder gevolgd fragment (testsessie, zie archief onderaan)
 Onderwijshuisvesting (Jenaplanschool) en pleidooi voor maatwerk bij
@@ -47,6 +60,8 @@ parkeernormen voor starters-, senioren- en flexwoningen nabij OV.
 ## Opvallend
 - [21:53] "De bereikbaarheid van Zuidplas kunnen we niet blijven oplossen
   met extra asfalt."
+- [21:56] "Onze inwoners vragen geen gemeente die vooral belooft, ze vragen
+  een gemeente die levert."
 - [17:18, testsessie] "Iedere woning die daardoor wél gerealiseerd kan
   worden, betekent een extra kans voor een inwoner die nu nog wacht op een
   passende woning."
