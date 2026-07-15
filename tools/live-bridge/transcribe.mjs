@@ -46,6 +46,9 @@ const OUT_FILE = process.env.OUT_FILE || join(REPO_DIR, 'data', 'zuidplas-live.m
 const STATUS_FILE = join(dirname(OUT_FILE), 'zuidplas-live-status.json');
 const DO_PUSH = process.env.PUSH === '1';
 const PUSH_INTERVAL_SECONDS = Number(process.env.PUSH_INTERVAL_SECONDS || 90);
+// Automatisch stoppen na N minuten (0 = doorgaan tot Ctrl+C). Gebruikt door
+// de onbemande autostart (AUTO-LIVE.cmd) zodat de brug zichzelf afsluit.
+const MAX_MINUTES = Number(process.env.MAX_MINUTES || 0);
 
 const FFMPEG_FORMAT = process.env.FFMPEG_FORMAT || 'pulse';
 const FFMPEG_INPUT = process.env.FFMPEG_INPUT || 'default';
@@ -266,6 +269,11 @@ async function main() {
   const chunkName = i => `chunk-${String(i).padStart(6, '0')}.wav`;
 
   while (true) {
+    if (MAX_MINUTES > 0 && !shuttingDown && Date.now() - sessionStart > MAX_MINUTES * 60 * 1000) {
+      shuttingDown = true;
+      log(`Maximale duur van ${MAX_MINUTES} min bereikt — netjes afronden…`);
+      try { recorder.kill(); } catch {}
+    }
     // Segment `next` is klaar zodra segment `next+1` bestaat (ffmpeg is er
     // dan zeker mee klaar), of zodra ffmpeg gestopt is (laatste segment).
     const files = new Set(await readdir(tmp).catch(() => []));

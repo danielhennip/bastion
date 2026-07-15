@@ -20,6 +20,24 @@ const ZUIDPLAS_MEETING_URL = 'https://zuidplas.notubiz.nl/vergadering/1391079';
 // "agenda": ["punt 1", "punt 2", ...] } om de agenda zelf te tonen.
 const ZUIDPLAS_AGENDA_SOURCES = ['data/zuidplas-manual.json', 'data/zuidplas.json'];
 
+// Live transcript/notities worden tijdens de vergadering naar deze branch
+// gepusht. De publieke site (GitHub Pages, main) leest ze daarom eerst
+// rechtstreeks uit die branch; lokaal/zelfde branch werkt het relatieve pad.
+const ZUIDPLAS_LIVE_BRANCH = 'claude/read-other-chat-3rr64o';
+const ZUIDPLAS_RAW_BASE = `https://raw.githubusercontent.com/danielhennip/bastion/${ZUIDPLAS_LIVE_BRANCH}/`;
+
+// Haal een databestand op: eerst uit de live-branch (vers), anders relatief.
+// Per bron max 5s wachten, zodat een trage/onbereikbare bron de rest niet blokkeert.
+async function fetchZuidplasData(path) {
+  for (const url of [ZUIDPLAS_RAW_BASE + path, path]) {
+    try {
+      const r = await fetch(url, { cache: 'no-store', signal: AbortSignal.timeout(5000) });
+      if (r.ok) return await r.text();
+    } catch (e) { /* volgende bron */ }
+  }
+  return null;
+}
+
 const FEEDS = {
   nos:       'https://feeds.nos.nl/nosnieuwsalgemeen',
   bbc:       'https://feeds.bbci.co.uk/news/world/rss.xml',
@@ -424,6 +442,19 @@ async function loadZuidplasTab() {
   const frame = document.getElementById('zuidplas-frame');
   if (frame && !frame.src) frame.src = ZUIDPLAS_MEETING_URL;
 
+  // "Vraag Claude"-knop: opent een Claude-chat die het live transcript en de
+  // AI-aantekeningen ophaalt, zodat je direct vragen kunt stellen (ook mobiel).
+  const ask = document.getElementById('zuidplas-ask-claude');
+  if (ask) {
+    const prompt = 'Haal deze twee bestanden op en lees ze: ' +
+      ZUIDPLAS_RAW_BASE + 'data/zuidplas-live.md (live transcript) en ' +
+      ZUIDPLAS_RAW_BASE + 'data/zuidplas-notes.md (AI-aantekeningen). ' +
+      'Het gaat om de (lopende) gemeenteraadsvergadering van Zuidplas. ' +
+      'Vat eerst in 3 zinnen samen waar het nu over gaat, en beantwoord daarna mijn vragen. ' +
+      'Haal bij nieuwe vragen het transcript opnieuw op, zodat je antwoorden actueel zijn.';
+    ask.href = 'https://claude.ai/new?q=' + encodeURIComponent(prompt);
+  }
+
   await Promise.all([loadZuidplasAgenda(), loadZuidplasLive(), loadZuidplasNotes()]);
 
   // Live transcript + AI-aantekeningen periodiek verversen zolang het tabblad open is.
@@ -442,17 +473,16 @@ async function loadZuidplasLive() {
   // zelf blijft immers staan na afloop van een vergadering.
   let fresh = false;
   try {
-    const rs = await fetch('data/zuidplas-live-status.json', { cache: 'no-store' });
-    if (rs.ok) {
-      const s = await rs.json();
+    const rs = await fetchZuidplasData('data/zuidplas-live-status.json');
+    if (rs) {
+      const s = JSON.parse(rs);
       fresh = s.updatedAt && (Date.now() - new Date(s.updatedAt).getTime()) < 5 * 60 * 1000 && s.running !== false;
     }
   } catch (e) { /* geen statusbestand — dan OFFLINE */ }
 
   try {
-    const r = await fetch('data/zuidplas-live.md', { cache: 'no-store' });
-    if (!r.ok) throw new Error('geen transcript');
-    const md = (await r.text()).trim();
+    const raw = await fetchZuidplasData('data/zuidplas-live.md');
+    const md = (raw || '').trim();
     if (!md) throw new Error('leeg');
 
     // Toon de laatste regels (nieuwste onderaan het bestand).
@@ -475,9 +505,8 @@ async function loadZuidplasNotes() {
   const badge = document.getElementById('zuidplas-notes-badge');
   if (!el) return;
   try {
-    const r = await fetch('data/zuidplas-notes.md', { cache: 'no-store' });
-    if (!r.ok) throw new Error('geen notities');
-    const md = await r.text();
+    const md = await fetchZuidplasData('data/zuidplas-notes.md');
+    if (!md) throw new Error('geen notities');
 
     const updated = (md.match(/<!--\s*bijgewerkt:\s*([^>]*?)\s*-->/) || [])[1];
     const body = md.replace(/<!--[\s\S]*?-->/g, '').trim();

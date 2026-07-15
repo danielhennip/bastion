@@ -16,12 +16,38 @@ leest mee, maakt AI-aantekeningen, en het dashboard toont beide live.
 
 Stoppen: **Ctrl + C** in dat venster (of het venster sluiten).
 
+> **Stil opnemen (geen geluid in de kamer):** steek een koptelefoon of
+> oortje in de laptop en leg die neer. Stereo Mix vangt af wat de laptop
+> afspeelt — dat werkt ook als niemand het hoort. Zet het volume wel op
+> een normaal niveau (niet gedempt), anders neemt Stereo Mix stilte op.
+
 Wil je dat Claude live meeschrijft? Open een Claude Code-sessie in deze repo
 en zeg: **"start meekijken"** — Claude volgt dan het transcript en vult de
 AI-aantekeningen op het dashboard.
 
 > Geen PowerShell-instellingen (`Set-ExecutionPolicy`) meer nodig:
 > `START-LIVE.cmd` is een gewoon batchbestand, daar geldt dat niet voor.
+
+---
+
+## Volautomatisch (laptop hoeft alleen aan te staan)
+
+Wil je niet eens meer hoeven klikken? Dubbelklik **één keer** op
+**`INSTALL-AUTOSTART.cmd`** (in de hoofdmap). Vanaf dan start de laptop
+elke **dinsdag om 19:55** zelf:
+
+1. de browser met de stream (autoplay aangezet),
+2. de transcriptie (`AUTO-LIVE.cmd`),
+3. en stopt vanzelf na 4 uur (instelbaar via `MAX_MINUTES` in `.env`).
+
+Voorwaarden: laptop aan + jij ingelogd. Andere dag of tijd? In PowerShell:
+`powershell -ExecutionPolicy Bypass -File tools\live-bridge\register-autostart.ps1 -Day Monday -Time 19:25`
+Uitzetten: zelfde script met `-Remove`.
+
+Tip: zet in `.env` een regel `LIVE_URL=https://zuidplas.notubiz.nl/vergadering/…`
+met de juiste vergadering-URL zodra die bekend is; zonder die regel opent de
+autostart de algemene Notubiz-portal. Controleer bij de eerste automatische
+run even of de speler daar echt vanzelf begint te spelen.
 
 ---
 
