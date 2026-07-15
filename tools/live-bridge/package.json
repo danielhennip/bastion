@@ -1,0 +1,9 @@
+{
+  "name": "zuidplas-live-bridge",
+  "private": true,
+  "type": "module",
+  "description": "Lokale brug die de live Zuidplas-raadsvergadering transcribeert zodat Claude kan meevolgen.",
+  "scripts": {
+    "start": "node transcribe.mjs"
+  }
+}

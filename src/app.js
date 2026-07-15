@@ -424,7 +424,37 @@ async function loadZuidplasTab() {
   const frame = document.getElementById('zuidplas-frame');
   if (frame && !frame.src) frame.src = ZUIDPLAS_MEETING_URL;
 
-  await loadZuidplasAgenda();
+  await Promise.all([loadZuidplasAgenda(), loadZuidplasLive()]);
+
+  // Live transcript elke 20s verversen zolang het tabblad open is.
+  if (!window._zuidplasLiveTimer) {
+    window._zuidplasLiveTimer = setInterval(loadZuidplasLive, 20000);
+  }
+}
+
+async function loadZuidplasLive() {
+  const el = document.getElementById('zuidplas-live');
+  const badge = document.getElementById('zuidplas-live-badge');
+  if (!el) return;
+  try {
+    const r = await fetch('data/zuidplas-live.md', { cache: 'no-store' });
+    if (!r.ok) throw new Error('geen transcript');
+    const md = (await r.text()).trim();
+    if (!md) throw new Error('leeg');
+
+    // Toon de laatste regels (nieuwste onderaan het bestand).
+    const lines = md.split('\n').filter(l => l.trim());
+    const recent = lines.slice(-40);
+    el.innerHTML = recent.map(l => `<div class="transcript-line">${escHtml(l)}</div>`).join('');
+    el.scrollTop = el.scrollHeight;
+
+    if (badge) {
+      badge.textContent = 'LIVE';
+      badge.classList.add('critical');
+    }
+  } catch (e) {
+    if (badge) badge.textContent = 'OFFLINE';
+  }
 }
 
 async function loadZuidplasAgenda() {
@@ -471,6 +501,22 @@ async function loadZuidplasAgenda() {
     el.innerHTML += `<div class="error-item">⚠ Automatische ophaal geblokkeerd door Notubiz (Cloudflare-botbescherming). Bekijk de vergadering via de speler/links hiernaast; agenda kan handmatig in <code>data/zuidplas-manual.json</code>.</div>`;
   } else {
     el.innerHTML += `<div class="error-item">Geen agendapunten gevonden.</div>`;
+  }
+
+  // Besluitenlijsten (PDF's) via zuidplas.nl.
+  if (Array.isArray(data.besluitenlijsten) && data.besluitenlijsten.length) {
+    const hdr = document.createElement('div');
+    hdr.className = 'news-title';
+    hdr.style.cssText = 'padding:12px 14px 4px;color:var(--text2);font-size:10px;letter-spacing:1px;text-transform:uppercase';
+    hdr.textContent = 'Besluitenlijsten';
+    el.appendChild(hdr);
+    data.besluitenlijsten.forEach(b => {
+      const a = document.createElement('a');
+      a.className = 'news-item';
+      a.href = b.url; a.target = '_blank'; a.rel = 'noopener noreferrer';
+      a.innerHTML = `<div class="news-title">📄 ${escHtml(b.label)}</div>`;
+      el.appendChild(a);
+    });
   }
 
   if (badge) {
