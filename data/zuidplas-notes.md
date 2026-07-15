@@ -1,36 +1,43 @@
-<!-- bijgewerkt: 2026-07-15T19:57:00Z -->
-<!-- transcript-offset: 1757 -->
+<!-- bijgewerkt: 2026-07-15T19:58:30Z -->
+<!-- transcript-offset: 2733 -->
 
-# AI-aantekeningen — testfragment raadsvergadering (15-7-2026)
+# AI-aantekeningen — raadsvergadering (opname, gevolgd 15-7-2026)
 
 ## Nu besproken
-Korte test van de live-brug (~1,5 minuut transcript). Fragment uit het
-vragenuur/debat: onderwijshuisvesting en parkeernormen bij woningbouw.
+Betoog over bereikbaarheid en groei van Zuidplas: pleidooi voor een nieuw
+treinstation, veilige fietsverbindingen en slimmer parkeerbeleid bij
+woningbouw; daarna aanzet over verbonden partijen en krappere financiën.
 
 ## Samenvatting tot nu toe
 
-### Onderwijshuisvesting (Jenaplanschool)
-Een raadslid dankt het college voor de beantwoording en spreekt vertrouwen
-uit dat de leslokalen zo snel mogelijk worden ingericht (transcript deels
-onduidelijk). Vervolgvraag gaat over de Jenaplanschool: investeren in
-openbaar onderwijs, met aandacht voor doorstroming en kansen.
+### Bereikbaarheid & mobiliteit
+[21:53] Betoog: als Zuidplas groeit, moeten woningen, voorzieningen en
+bereikbaarheid gelijk oplopen. De ruimte voor nieuwe wegen is vrijwel
+uitgeput — bereikbaarheid is niet langer op te lossen met extra asfalt.
+Daarom prioriteit voor een nieuw treinstation en hoogwaardige, veilige
+fietsverbindingen tussen de dorpen, scholen, sportvoorzieningen en winkels,
+en naar omliggende stations. Investeren in openbaar vervoer en fiets geeft
+ook ruimte om bij woningbouw slimmer met parkeren om te gaan: "zo versterken
+mobiliteit en woningbouw elkaar in plaats van elkaar te blokkeren."
 
-### Parkeernormen en woningbouw
-Betoog: starre parkeernormen kunnen woningbouwplannen belemmeren of zelfs
-onmogelijk maken. Pleidooi voor maatwerk waar mogelijk — zeker bij woningen
-voor starters, senioren en flexwoningen op locaties die goed bereikbaar zijn
-met openbaar vervoer of fiets. "Iedere woning die daardoor wél gerealiseerd
-kan worden, betekent een extra kans voor een inwoner die nu nog wacht op een
-passende woning."
+### Verbonden partijen & financiën
+[21:54] Een steeds groter deel van de publieke middelen loopt via verbonden
+partijen. Juist nu de financiële ruimte kleiner wordt, is het belangrijk dat
+iedere euro daar goed besteed wordt (zin loopt door in volgend blok).
+
+### Eerder gevolgd fragment (testsessie, zie archief onderaan)
+Onderwijshuisvesting (Jenaplanschool) en pleidooi voor maatwerk bij
+parkeernormen voor starters-, senioren- en flexwoningen nabij OV.
 
 ## Besluiten & stemmingen
-- Geen besluiten in dit fragment.
+- Nog geen besluiten of stemmingen langsgekomen.
 
 ## Toezeggingen & actiepunten
-- Geen expliciete toezeggingen in dit fragment.
+- Nog geen expliciete toezeggingen genoteerd.
 
 ## Opvallend
-- [17:18] "Iedere woning die daardoor wél gerealiseerd kan worden, betekent
-  een extra kans voor een inwoner die nu nog wacht op een passende woning."
-
-_Dit was een korte test van de live-brug; de brug is daarna gestopt._
+- [21:53] "De bereikbaarheid van Zuidplas kunnen we niet blijven oplossen
+  met extra asfalt."
+- [17:18, testsessie] "Iedere woning die daardoor wél gerealiseerd kan
+  worden, betekent een extra kans voor een inwoner die nu nog wacht op een
+  passende woning."
