@@ -624,6 +624,21 @@ button { cursor: pointer; border: none; background: none; color: inherit; font: 
 }
 .transcript-line:last-child { border-bottom: none; }
 
+/* AI-aantekeningen (mini-markdown, gevuld door Claude) */
+.ai-notes { max-height: 320px; }
+.ai-notes .notes-h1 {
+  font-size: 13px; font-weight: 700; color: var(--text);
+  padding: 6px 0 2px;
+}
+.ai-notes .notes-h2 {
+  font-size: 11px; font-weight: 700; letter-spacing: 1px;
+  text-transform: uppercase; color: var(--text2);
+  padding: 10px 0 2px; border-bottom: 1px solid var(--border);
+}
+.ai-notes .notes-h3 { font-size: 12px; font-weight: 600; padding: 6px 0 1px; }
+.ai-notes .notes-li { padding: 2px 0 2px 6px; }
+.ai-notes .notes-p  { padding: 2px 0; }
+
 /* ══════════════════════════════════════════
    QUICK LINKS
 ══════════════════════════════════════════ */

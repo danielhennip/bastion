@@ -2,124 +2,65 @@
 
 Doel: je Windows-laptop vangt tijdens de vergadering het geluid van de
 Notubiz-livestream op, zet het om naar tekst en pusht dat naar de repo. Claude
-leest die tekst — ook in je chat op de telefoon.
-
-Je hoeft dit maar **één keer** in te stellen. Daarna is het: stream afspelen →
-brug starten.
+leest mee, maakt AI-aantekeningen, en het dashboard toont beide live.
 
 ---
 
-## Snelste weg: twee scripts
+## Elke vergadering: zó start je (2 stappen)
 
-De repo bevat twee kant-en-klare PowerShell-scripts, zodat je bijna niets
-handmatig hoeft te doen.
+1. Open de vergadering in je browser en start de uitzending, **geluid aan**
+   (bijv. via https://zuidplas.notubiz.nl).
+2. Dubbelklik **`START-LIVE.cmd`** in de map van de repo (bijv.
+   `C:\Windows\system32\bastion`). Dat is alles — het venster werkt eerst de
+   code bij en begint dan met opnemen en transcriberen.
 
-```powershell
-# 1) Repo ophalen
-git clone https://github.com/danielhennip/bastion.git
-cd bastion
-git checkout claude/zuidplas-livestream-tool-kiz0jd
-cd tools\live-bridge
+Stoppen: **Ctrl + C** in dat venster (of het venster sluiten).
 
-# 2) Eénmalige installatie (installeert Node, ffmpeg, Git; vraagt je
-#    OpenAI-sleutel en audiobron). Draai PowerShell als Administrator.
-.\setup-windows.ps1
+Wil je dat Claude live meeschrijft? Open een Claude Code-sessie in deze repo
+en zeg: **"start meekijken"** — Claude volgt dan het transcript en vult de
+AI-aantekeningen op het dashboard.
 
-# 3) Tijdens de vergadering (stream speelt in je browser, geluid aan):
-.\start-live.ps1
-```
-
-> Als PowerShell scripts blokkeert, sta ze eerst toe voor deze sessie:
-> `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass`
-
-Werkt dat? Klaar. Wil je begrijpen wat er gebeurt of loopt iets mis, volg dan de
-handmatige stappen hieronder.
+> Geen PowerShell-instellingen (`Set-ExecutionPolicy`) meer nodig:
+> `START-LIVE.cmd` is een gewoon batchbestand, daar geldt dat niet voor.
 
 ---
 
-## Eenmalig instellen
+## Eenmalig instellen (op deze laptop al gebeurd ✅)
 
-### 1. Node.js installeren
-Download de LTS-versie van https://nodejs.org en installeer (klik door de wizard).
-Controleer in **PowerShell**:
-```powershell
-node --version
-```
+1. **Software**: Git, ffmpeg, Node.js, Python 3 — geïnstalleerd via `winget`.
+2. **Whisper (gratis, lokaal)**: `pip install openai-whisper` — gedaan.
+3. **Stereo Mix** aangezet: Geluidsinstellingen → tab Opnemen → rechtsklik →
+   "Uitgeschakelde apparaten weergeven" → Stereo Mix → Inschakelen.
+   - Geen Stereo Mix op jouw pc? Installeer gratis VB-CABLE
+     (https://vb-audio.com/Cable/) en gebruik `CABLE Output` als invoer.
+4. **`.env`** in `tools\live-bridge\.env`:
 
-### 2. ffmpeg installeren
-Makkelijkste manier (PowerShell als Administrator):
-```powershell
-winget install Gyan.FFmpeg
-```
-Sluit PowerShell en open opnieuw. Controleer:
-```powershell
-ffmpeg -version
-```
+   ```
+   FFMPEG_FORMAT=dshow
+   FFMPEG_INPUT=audio=Stereo Mix (Realtek(R) Audio)
+   LOCAL_WHISPER=1
+   WHISPER_MODEL_SIZE=base
+   PUSH=1
+   ```
 
-### 3. Geluid van de stream opvangbaar maken (Stereo Mix)
-Windows kan het geluid dat je hoort teruglezen via "Stereo Mix":
-1. Rechtsklik op het luidspreker-icoon → **Geluidsinstellingen** → **Meer
-   geluidsinstellingen** → tab **Opnemen**.
-2. Rechtsklik in de lijst → **Uitgeschakelde apparaten weergeven**.
-3. Zie je **Stereo Mix**? Rechtsklik → **Inschakelen**.
-   - Geen Stereo Mix? Installeer dan de gratis **VB-CABLE**
-     (https://vb-audio.com/Cable/) en gebruik "CABLE Output" i.p.v. Stereo Mix.
-
-Zoek de exacte apparaatnaam op:
-```powershell
-ffmpeg -hide_banner -list_devices true -f dshow -i dummy
-```
-Noteer de naam precies zoals getoond, bijv. `Stereo Mix (Realtek(R) Audio)`.
-
-### 4. De repo op je laptop zetten
-Installeer Git (https://git-scm.com) en clone je repo (voorbeeld):
-```powershell
-git clone https://github.com/danielhennip/bastion.git
-cd bastion
-git checkout claude/zuidplas-livestream-tool-kiz0jd
-cd tools\live-bridge
-npm install
-```
-
-### 5. Transcriptie-sleutel (aanrader op Windows: OpenAI)
-Geen model-download nodig. Zet je sleutel klaar (vervang door je eigen):
-```powershell
-$env:OPENAI_API_KEY = "sk-...jouw-sleutel..."
-```
-(Gratis-lokaal met whisper.cpp kan ook — zie README.md — maar is meer werk.)
-
----
-
-## Elke vergadering: starten
-
-1. Open de vergadering in je browser en start de uitzending (geluid aan):
-   `https://zuidplas.notubiz.nl/vergadering/1391079`
-2. In PowerShell, vanuit de map `tools\live-bridge`:
-
-```powershell
-$env:FFMPEG_FORMAT = "dshow"
-$env:FFMPEG_INPUT  = "audio=Stereo Mix (Realtek(R) Audio)"   # exact jouw naam uit stap 3
-$env:OPENAI_API_KEY = "sk-...jouw-sleutel..."
-$env:PUSH = "1"                                              # pusht transcript automatisch
-node transcribe.mjs
-```
-
-Je ziet elke ~30 seconden een regel verschijnen. Het transcript loopt vol in
-`data/zuidplas-live.md` en wordt gepusht. In het BASTION-dashboard verschijnt het
-onder **Live transcript**, en ik kan het in de chat lezen en samenvatten.
-
-Stoppen: druk **Ctrl + C** in PowerShell.
+5. **GitHub-login (één keer)**: bij de eerste push opent Windows een
+   browservenster om in te loggen bij GitHub. Daarna onthoudt de laptop het.
+   Testen kan los met: PowerShell → `cd` naar de repo-map → `git push`.
 
 ---
 
 ## Problemen oplossen
 
-- **"Geen transcriptie-optie"** → `OPENAI_API_KEY` niet gezet in hetzelfde
-  PowerShell-venster.
-- **ffmpeg-fout / geen geluid** → apparaatnaam in `FFMPEG_INPUT` klopt niet
-  exact; check stap 3 opnieuw. Of Stereo Mix staat op mute in de Opnemen-tab.
-- **git push vraagt om inloggen** → log één keer in met je GitHub-account
-  (of gebruik GitHub Desktop). Zonder push blijft het transcript lokaal; je
-  kunt het dan handmatig in de chat plakken.
-- **Niets in het dashboard** → het dashboard leest de branch die je gepusht
-  hebt; ik kan het transcript sowieso rechtstreeks uit de repo lezen.
+- **Groot kader "GIT PUSH MISLUKT" in het venster** → volg de instructie in
+  dat kader: één keer `git push` in een los venster en inloggen via de
+  browser. Het transcript gaat lokaal gewoon door, er raakt niets kwijt.
+- **ffmpeg-fout bij start** → apparaatnaam in `FFMPEG_INPUT` klopt niet
+  exact, of Stereo Mix staat uit/op mute. Naam opzoeken:
+  `ffmpeg -hide_banner -list_devices true -f dshow -i dummy`
+- **"Transcriptie loopt X blokken achter"** → je pc kan het model niet
+  bijbenen. Zet in `.env`: `WHISPER_MODEL_SIZE=tiny` (sneller) — of juist
+  `small` als je pc snel genoeg is en je betere kwaliteit wilt.
+- **Lege of onzinnige tekst** → controleer dat de stream écht hoorbaar
+  speelt (volume aan, juiste uitvoerapparaat) en dat er gesproken wordt.
+- **Niets in het dashboard** → kijk of het venster "✓ Transcript gepusht"
+  meldt. Zo niet: zie het push-punt hierboven.

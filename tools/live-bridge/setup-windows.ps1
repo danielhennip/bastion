@@ -66,5 +66,5 @@ if ($dev) {
 }
 
 Write-Host "`n=== Klaar! ===" -ForegroundColor Green
-Write-Host "Start de vergadering in je browser (geluid aan) en run daarna:" -ForegroundColor Cyan
-Write-Host "    .\start-live.ps1`n" -ForegroundColor White
+Write-Host "Start de vergadering in je browser (geluid aan) en dubbelklik daarna" -ForegroundColor Cyan
+Write-Host "    START-LIVE.cmd  (in de hoofdmap van de repo)`n" -ForegroundColor White

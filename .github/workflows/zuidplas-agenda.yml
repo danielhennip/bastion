@@ -10,9 +10,9 @@ on:
     - cron: '0 6 * * 1'   # elke maandag 06:00 UTC
   push:
     branches:
-      - claude/zuidplas-livestream-tool-kiz0jd
+      - claude/read-other-chat-3rr64o   # test-trigger; verwijderen bij merge naar main
     paths-ignore:
-      - 'data/**'
+      - 'data/**'                       # transcript-/notitie-pushes triggeren níet
   workflow_dispatch: {}
 
 permissions:

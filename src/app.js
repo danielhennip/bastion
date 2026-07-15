@@ -424,11 +424,12 @@ async function loadZuidplasTab() {
   const frame = document.getElementById('zuidplas-frame');
   if (frame && !frame.src) frame.src = ZUIDPLAS_MEETING_URL;
 
-  await Promise.all([loadZuidplasAgenda(), loadZuidplasLive()]);
+  await Promise.all([loadZuidplasAgenda(), loadZuidplasLive(), loadZuidplasNotes()]);
 
-  // Live transcript elke 20s verversen zolang het tabblad open is.
+  // Live transcript + AI-aantekeningen periodiek verversen zolang het tabblad open is.
   if (!window._zuidplasLiveTimer) {
     window._zuidplasLiveTimer = setInterval(loadZuidplasLive, 20000);
+    window._zuidplasNotesTimer = setInterval(loadZuidplasNotes, 30000);
   }
 }
 
@@ -436,6 +437,18 @@ async function loadZuidplasLive() {
   const el = document.getElementById('zuidplas-live');
   const badge = document.getElementById('zuidplas-live-badge');
   if (!el) return;
+
+  // LIVE alleen tonen als de brug recent (< 5 min) iets schreef; het bestand
+  // zelf blijft immers staan na afloop van een vergadering.
+  let fresh = false;
+  try {
+    const rs = await fetch('data/zuidplas-live-status.json', { cache: 'no-store' });
+    if (rs.ok) {
+      const s = await rs.json();
+      fresh = s.updatedAt && (Date.now() - new Date(s.updatedAt).getTime()) < 5 * 60 * 1000 && s.running !== false;
+    }
+  } catch (e) { /* geen statusbestand — dan OFFLINE */ }
+
   try {
     const r = await fetch('data/zuidplas-live.md', { cache: 'no-store' });
     if (!r.ok) throw new Error('geen transcript');
@@ -447,13 +460,47 @@ async function loadZuidplasLive() {
     const recent = lines.slice(-40);
     el.innerHTML = recent.map(l => `<div class="transcript-line">${escHtml(l)}</div>`).join('');
     el.scrollTop = el.scrollHeight;
+  } catch (e) { /* transcript (nog) leeg — melding in HTML blijft staan */ }
+
+  if (badge) {
+    badge.textContent = fresh ? 'LIVE' : 'OFFLINE';
+    badge.classList.toggle('critical', fresh);
+  }
+}
+
+// AI-aantekeningen: door Claude gevuld (skill zuidplas-meekijken) in
+// data/zuidplas-notes.md. Mini-markdownweergave, geen externe libs.
+async function loadZuidplasNotes() {
+  const el = document.getElementById('zuidplas-notes');
+  const badge = document.getElementById('zuidplas-notes-badge');
+  if (!el) return;
+  try {
+    const r = await fetch('data/zuidplas-notes.md', { cache: 'no-store' });
+    if (!r.ok) throw new Error('geen notities');
+    const md = await r.text();
+
+    const updated = (md.match(/<!--\s*bijgewerkt:\s*([^>]*?)\s*-->/) || [])[1];
+    const body = md.replace(/<!--[\s\S]*?-->/g, '').trim();
+    if (!body) throw new Error('leeg');
+
+    el.innerHTML = body.split('\n').map(line => {
+      const t = line.trim();
+      if (!t) return '';
+      const safe = escHtml(t).replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+      if (t.startsWith('### ')) return `<div class="notes-h3">${safe.slice(4)}</div>`;
+      if (t.startsWith('## '))  return `<div class="notes-h2">${safe.slice(3)}</div>`;
+      if (t.startsWith('# '))   return `<div class="notes-h1">${safe.slice(2)}</div>`;
+      if (t.startsWith('- '))   return `<div class="notes-li">• ${safe.slice(2)}</div>`;
+      return `<div class="notes-p">${safe}</div>`;
+    }).join('');
 
     if (badge) {
-      badge.textContent = 'LIVE';
-      badge.classList.add('critical');
+      const fresh = updated && updated !== 'nooit' && (Date.now() - new Date(updated).getTime()) < 10 * 60 * 1000;
+      badge.textContent = fresh ? 'LIVE' : (updated && updated !== 'nooit' ? timeAgo(updated) : '—');
+      badge.classList.toggle('critical', !!fresh);
     }
   } catch (e) {
-    if (badge) badge.textContent = 'OFFLINE';
+    if (badge) badge.textContent = '—';
   }
 }
 

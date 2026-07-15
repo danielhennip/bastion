@@ -56,6 +56,26 @@ function cleanList($, selectors) {
   return items;
 }
 
+// PDF-tekst: eerst met een echte parser (pdfjs-dist, kan gecomprimeerde
+// streams aan), en pas als die ontbreekt/faalt de oude regex-benadering.
+async function pdfText(buffer) {
+  try {
+    const pdfjs = await import('pdfjs-dist/legacy/build/pdf.mjs');
+    const doc = await pdfjs.getDocument({ data: new Uint8Array(buffer), useSystemFonts: true }).promise;
+    let text = '';
+    for (let p = 1; p <= doc.numPages; p++) {
+      const page = await doc.getPage(p);
+      const tc = await page.getTextContent();
+      text += tc.items.map(i => i.str).join(' ') + '\n';
+    }
+    text = text.replace(/\s+/g, ' ').trim();
+    if (text) return text;
+  } catch (e) {
+    console.warn('pdfjs-dist niet beschikbaar/faalde, val terug op best-effort:', String((e && e.message) || e).slice(0, 200));
+  }
+  return pdfTextBestEffort(buffer);
+}
+
 // Best-effort PDF-tekst zonder externe binaries: haal tekst-tokens uit de
 // PDF-content streams. Werkt voor eenvoudige, niet-gecomprimeerde besluiten-
 // lijsten; anders blijft het leeg (geen harde fout).
@@ -125,7 +145,7 @@ async function main() {
     try {
       const buf = await fetchBuffer(firstPdf.url);
       if (buf.ok) {
-        const text = pdfTextBestEffort(buf.buffer);
+        const text = await pdfText(buf.buffer);
         latestDecisions = { label: firstPdf.label, url: firstPdf.url, textPreview: text.slice(0, 3000) };
       }
       attempts.push({ label: 'besluitenlijst-pdf', url: firstPdf.url, status: buf.status });
