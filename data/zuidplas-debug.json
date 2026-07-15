@@ -1,21 +1,41 @@
 {
   "fetchedAt": "2026-07-15T11:23:51.670Z",
-  "meetingId": "1391079",
-  "notubizUrl": "https://zuidplas.notubiz.nl/vergadering/1391079",
-  "dataSource": "raadsvergadering-14-juli-2026",
-  "title": "Raadsvergadering - 14 juli 2026",
-  "agenda": [
-    "Raadsvergadering - 14 juli 2026",
-    "Datum: dinsdag 14 juli 2026",
-    "Aanvang: 14.00 uur",
-    "Locatie: Raadhuisplein 1 in Nieuwerkerk aan den IJssel èn online te volgen via: Live vergaderingen volgen",
-    "Raadsvoorstel Toelating en beëdiging nieuwe raadsleden",
-    "Raadsvoorstel Benoemen Leden Programmaraad Groene Hart Rekenkamer",
-    "U bent van harte welkom de raadsvergadering op dinsdag 14 juli online te volgen of bij te wonen",
-    "In ons raadsinformatiesysteem (agenda 14 juli) vindt u de uitgebreide agenda en alle vergaderstukken voor de vergaderingen.",
-    "Het is niet (meer) mogelijk in te spreken op de volgende onderwerpen:"
+  "attempts": [
+    {
+      "label": "agenda-index",
+      "url": "https://www.zuidplas.nl/agenda-gemeenteraad",
+      "status": 200,
+      "blocked": false,
+      "title": "Agenda gemeenteraad"
+    },
+    {
+      "label": "besluitenlijsten",
+      "url": "https://www.zuidplas.nl/besluitenlijsten-gemeenteraad",
+      "status": 200,
+      "blocked": false,
+      "title": "Besluitenlijsten gemeenteraad"
+    },
+    {
+      "label": "raadsvergadering-14-juli-2026",
+      "url": "https://www.zuidplas.nl/raadsvergadering-14-juli-2026",
+      "status": 200,
+      "blocked": false,
+      "title": "Raadsvergadering - 14 juli 2026"
+    },
+    {
+      "label": "raadsvergadering-6-juli-2026",
+      "url": "https://www.zuidplas.nl/raadsvergadering-6-juli-2026",
+      "status": 200,
+      "blocked": false,
+      "title": "Raadsvergadering - 6 juli 2026"
+    },
+    {
+      "label": "besluitenlijst-pdf",
+      "url": "https://cuatro.sim-cdn.nl/zuidplas/uploads/Besluitenlijst%20gemeenteraad%20Zuidplas%206%20juli%202026_0.pdf?cb=O-0K26y4",
+      "status": 200
+    }
   ],
-  "besluitenlijsten": [
+  "besluitenPdfs": [
     {
       "label": "Besluitenlijst gemeenteraad Zuidplas 6 juli 2026(PDF, 84 kB)",
       "url": "https://cuatro.sim-cdn.nl/zuidplas/uploads/Besluitenlijst%20gemeenteraad%20Zuidplas%206%20juli%202026_0.pdf?cb=O-0K26y4",
@@ -61,11 +81,5 @@
       "url": "https://cuatro.sim-cdn.nl/zuidplas/uploads/besluitenlijst_gemeenteraad_zuidplas_13-14_januari_2026.pdf?cb=kuqhMcCs",
       "from": "besluitenlijsten"
     }
-  ],
-  "latestDecisions": {
-    "label": "Besluitenlijst gemeenteraad Zuidplas 6 juli 2026(PDF, 84 kB)",
-    "url": "https://cuatro.sim-cdn.nl/zuidplas/uploads/Besluitenlijst%20gemeenteraad%20Zuidplas%206%20juli%202026_0.pdf?cb=O-0K26y4",
-    "textPreview": ""
-  },
-  "note": "Inhoud via zuidplas.nl (bereikbaar). De volledige live-agenda en gesproken vergadering staan op Notubiz, dat automatische toegang blokkeert — gebruik daarvoor de live-brug (tools/live-bridge)."
+  ]
 }
