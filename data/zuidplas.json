@@ -1,0 +1,12 @@
+{
+  "fetchedAt": "2026-07-15T10:38:29.716Z",
+  "sourceUrl": "https://zuidplas.notubiz.nl/vergadering/1391079",
+  "meetingId": "1391079",
+  "dataSource": "blocked",
+  "title": "Sorry, you have been blocked",
+  "status": "http-403",
+  "cloudflareBlocked": true,
+  "agenda": [],
+  "videoLinks": [],
+  "iframeSrcs": []
+}
