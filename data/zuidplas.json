@@ -1,12 +1,15 @@
 {
-  "fetchedAt": "2026-07-15T10:38:29.716Z",
-  "sourceUrl": "https://zuidplas.notubiz.nl/vergadering/1391079",
+  "fetchedAt": "2026-07-15T11:03:19.156Z",
   "meetingId": "1391079",
-  "dataSource": "blocked",
-  "title": "Sorry, you have been blocked",
-  "status": "http-403",
-  "cloudflareBlocked": true,
-  "agenda": [],
-  "videoLinks": [],
-  "iframeSrcs": []
+  "notubizUrl": "https://zuidplas.notubiz.nl/vergadering/1391079",
+  "dataSource": "zuidplas-agenda-index",
+  "title": "Agenda gemeenteraad",
+  "agenda": [
+    "Home",
+    "Bestuur",
+    "Gemeenteraad",
+    "Agenda gemeenteraad"
+  ],
+  "textPreview": "HomeBestuurGemeenteraadAgenda gemeenteraadAgenda gemeenteraadVia het Raadsinformatiesysteem kunt u het schema voor de vergaderingen van de gemeenteraad bekijken, stukken raadplegen, live uitzendingen bekijken of videoverslagen terugkijken. U kunt het vergaderschema van dit jaar hieronder downloaden of via de knop ‘Raadsinformatiesysteem’ de complete agenda bekijken.Vergaderingen van de gemeente Zuidplas zijn openbaar en kunnen door iedereen worden bijgewoond op de publieke tribune of online (behalve besloten vergaderingen).Raadsinformatiesysteem",
+  "note": "Data via een bereikbare bron (zuidplas.nl / web.archive.org). Notubiz zelf blokkeert automatische toegang."
 }

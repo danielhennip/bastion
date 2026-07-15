@@ -1,41 +1,113 @@
 {
-  "fetchedAt": "2026-07-15T10:38:29.716Z",
-  "api": [
+  "fetchedAt": "2026-07-15T11:03:19.156Z",
+  "attempts": [
     {
-      "url": "https://api.notubiz.nl/events/meeting/1391079?format=json&version=1.10.0",
-      "error": "fetch failed"
+      "label": "zuidplas-agenda-index",
+      "url": "https://www.zuidplas.nl/agenda-gemeenteraad",
+      "status": 200,
+      "finalUrl": "https://www.zuidplas.nl/agenda-gemeenteraad",
+      "blocked": false,
+      "title": "Agenda gemeenteraad",
+      "agendaCount": 4,
+      "textPreview": "HomeBestuurGemeenteraadAgenda gemeenteraadAgenda gemeenteraadVia het Raadsinformatiesysteem kunt u het schema voor de vergaderingen van de gemeenteraad bekijken, stukken raadplegen, live uitzendingen bekijken of videoverslagen terugkijken. U kunt het vergaderschema van dit jaar hieronder downloaden of via de knop ‘Raadsinformatiesysteem’ de complete agenda bekijken.Vergaderingen van de gemeente Zuidplas zijn openbaar en kunnen door iedereen worden bijgewoond op de publieke tribune of online (behalve besloten vergaderingen).Raadsinformatiesysteem",
+      "agenda": [
+        "Home",
+        "Bestuur",
+        "Gemeenteraad",
+        "Agenda gemeenteraad"
+      ]
     },
     {
-      "url": "https://api.notubiz.nl/events/meeting/1391079?format=json",
-      "error": "fetch failed"
+      "label": "zuidplas-vergaderingen",
+      "url": "https://www.zuidplas.nl/vergaderingen-gemeenteraad",
+      "status": 404,
+      "finalUrl": "https://www.zuidplas.nl/vergaderingen-gemeenteraad",
+      "blocked": false,
+      "title": null,
+      "agendaCount": 0,
+      "textPreview": "",
+      "agenda": []
     },
     {
-      "url": "https://api.notubiz.nl/events/1391079?format=json&version=1.10.0",
-      "error": "fetch failed"
+      "label": "zuidplas-besluitenlijst",
+      "url": "https://www.zuidplas.nl/besluitenlijsten-gemeenteraad",
+      "status": 200,
+      "finalUrl": "https://www.zuidplas.nl/besluitenlijsten-gemeenteraad",
+      "blocked": false,
+      "title": "Besluitenlijsten gemeenteraad",
+      "agendaCount": 13,
+      "textPreview": "HomeBestuurGemeenteraadBesluitenlijsten gemeenteraadBesluitenlijsten gemeenteraadNa iedere gemeenteraadsvergadering wordt op deze pagina de besluitenlijst van de gemeenteraad gepubliceerd. U kunt per vergaderdatum de besluitenlijsten van de gemeenteraad bekijken. In de besluitenlijst van de gemeenteraad staat vermeld wat de gemeenteraad tijdens een vergadering heeft besloten.Staat de door u gezochte besluitenlijst niet vermeld? U kunt raadsbesluiten vanaf 2013 bekijken of downloaden via ons 'Webarchief'.Besluitenlijsten 2026Besluitenlijst gemeenteraad Zuidplas 6 juli 2026(PDF, 84 kB)Besluitenlijst gemeenteraad Zuidplas 30 juni 2026(PDF, 151,4 kB)Besluitenlijst gemeenteraad Zuidplas 23 juni 2026(PDF, 109,1 kB)Besluitenlijst gemeenteraad Zuidplas 26 mei 2026(PDF, 107,7 kB)Besluitenlijst gemeenteraad Zuidplas 21 april 2026(PDF, 115,5 kB)Besluitenlijst gemeenteraad Zuidplas 24 februari 2026(PDF, 111,3 kB)Besluitenlijst gemeenteraad Zuidplas 11 februari 2026(PDF, 97,7 kB)Besluitenlijst gemeenteraad Zuidplas 3-4 februari 2026(PDF, 135,5 kB)Besluitenlijst gemeenteraad Zuidplas 13-14 januari 2026(PDF, 147,6 kB)",
+      "agenda": [
+        "Home",
+        "Bestuur",
+        "Gemeenteraad",
+        "Besluitenlijsten gemeenteraad",
+        "Besluitenlijst gemeenteraad Zuidplas 6 juli 2026(PDF, 84 kB)",
+        "Besluitenlijst gemeenteraad Zuidplas 30 juni 2026(PDF, 151,4 kB)",
+        "Besluitenlijst gemeenteraad Zuidplas 23 juni 2026(PDF, 109,1 kB)",
+        "Besluitenlijst gemeenteraad Zuidplas 26 mei 2026(PDF, 107,7 kB)",
+        "Besluitenlijst gemeenteraad Zuidplas 21 april 2026(PDF, 115,5 kB)",
+        "Besluitenlijst gemeenteraad Zuidplas 24 februari 2026(PDF, 111,3 kB)",
+        "Besluitenlijst gemeenteraad Zuidplas 11 februari 2026(PDF, 97,7 kB)",
+        "Besluitenlijst gemeenteraad Zuidplas 3-4 februari 2026(PDF, 135,5 kB)",
+        "Besluitenlijst gemeenteraad Zuidplas 13-14 januari 2026(PDF, 147,6 kB)"
+      ]
     },
     {
-      "url": "https://api.notubiz.nl/gathering/1391079?format=json&version=1.10.0",
-      "error": "fetch failed"
+      "label": "zuidplas-14-juli-2026",
+      "url": "https://www.zuidplas.nl/raadsvergadering-14-juli-2026",
+      "status": 200,
+      "finalUrl": "https://www.zuidplas.nl/raadsvergadering-14-juli-2026",
+      "blocked": false,
+      "title": "Raadsvergadering - 14 juli 2026",
+      "agendaCount": 11,
+      "textPreview": "HomeIn ZuidplasActueelNieuwsNieuws archiefRaadsvergadering - 14 juli 2026Raadsvergadering - 14 juli 2026Dit is een oud bericht.08-07-2026, 00:15U bent van harte welkom de raadsvergadering op dinsdag 14 juli online te volgen of bij te wonen Datum: dinsdag 14 juli 2026Aanvang: 14.00 uurLocatie: Raadhuisplein 1 in Nieuwerkerk aan den IJssel èn online te volgen via: Live vergaderingen volgenVergaderpuntenIn ons raadsinformatiesysteem (agenda 14 juli) vindt u de uitgebreide agenda en alle vergaderstukken voor de vergaderingen.SpreekrechtIedereen, dus ook u als inwoner of ondernemer, mag gebruik maken van het spreekrecht. U moet fysiek bij de vergadering aanwezig zijn om in te spreken. Het inspreken gebeurt bij het agendapunt ‘spreekrecht’. Men kan niet meerdere sprekers voor zich laten inspreken per onderwerp. Elke inspreker krijgt maximaal vijf minuten het woord. De totale spreektijd is 30 minuten. Als er meer dan zes sprekers zijn, verdeelt de voorzitter de spreektijd gelijk over alle sprekers.Het is niet (meer) mogelijk in te spreken op de volgende onderwerpen:Raadsvoorstel Toelating en beëdiging nieuwe raadsledenRaadsvoorstel Benoemen Leden Programmaraad Groene Hart RekenkamerAanmel",
+      "agenda": [
+        "Home",
+        "In Zuidplas",
+        "Actueel",
+        "Nieuws",
+        "Nieuws archief",
+        "Raadsvergadering - 14 juli 2026",
+        "Datum: dinsdag 14 juli 2026",
+        "Aanvang: 14.00 uur",
+        "Locatie: Raadhuisplein 1 in Nieuwerkerk aan den IJssel èn online te volgen via: Live vergaderingen volgen",
+        "Raadsvoorstel Toelating en beëdiging nieuwe raadsleden",
+        "Raadsvoorstel Benoemen Leden Programmaraad Groene Hart Rekenkamer"
+      ]
     },
     {
-      "url": "https://api.notubiz.nl/meeting/1391079?format=json",
-      "error": "fetch failed"
+      "label": "zuidplas-6-juli-2026",
+      "url": "https://www.zuidplas.nl/raadsvergadering-6-juli-2026",
+      "status": 200,
+      "finalUrl": "https://www.zuidplas.nl/raadsvergadering-6-juli-2026",
+      "blocked": false,
+      "title": "Raadsvergadering - 6 juli 2026",
+      "agendaCount": 10,
+      "textPreview": "HomeIn ZuidplasActueelNieuwsNieuws archiefRaadsvergadering - 6 juli 2026Raadsvergadering - 6 juli 2026Dit is een oud bericht.30-06-2026, 01:30U bent van harte welkom de raadsvergadering op maandag 6 juli online te volgen of bij te wonen Datum: maandag 6 juli 2026Aanvang: 19.30 uurLocatie: Raadhuisplein 1 in Nieuwerkerk aan den IJssel èn online te volgen via: Live vergaderingen volgenVergaderpuntenIn ons raadsinformatiesysteem (agenda 6 juli) vindt u de uitgebreide agenda en alle vergaderstukken voor de vergaderingen.SpreekrechtIedereen, dus ook u als inwoner of ondernemer, mag gebruik maken van het spreekrecht. U moet fysiek bij de vergadering aanwezig zijn om in te spreken. Het inspreken gebeurt bij het agendapunt ‘spreekrecht’. Men kan niet meerdere sprekers voor zich laten inspreken per onderwerp. Elke inspreker krijgt maximaal vijf minuten het woord. De totale spreektijd is 30 minuten. Als er meer dan zes sprekers zijn, verdeelt de voorzitter de spreektijd gelijk over alle sprekers.Het is niet (meer) mogelijk in te spreken op de volgende onderwerpen:Raadsvoorstel Benoeming wethoudersAanmeldenAanmelden voor het spreekrecht kan uiterlijk tot 12.00 uur op de dag van de vergadering",
+      "agenda": [
+        "Home",
+        "In Zuidplas",
+        "Actueel",
+        "Nieuws",
+        "Nieuws archief",
+        "Raadsvergadering - 6 juli 2026",
+        "Datum: maandag 6 juli 2026",
+        "Aanvang: 19.30 uur",
+        "Locatie: Raadhuisplein 1 in Nieuwerkerk aan den IJssel èn online te volgen via: Live vergaderingen volgen",
+        "Raadsvoorstel Benoeming wethouders"
+      ]
     },
     {
-      "url": "https://api.notubiz.nl/events/meeting/1391079",
-      "error": "fetch failed"
+      "label": "wayback-notubiz",
+      "url": "https://web.archive.org/web/2id_/https://zuidplas.notubiz.nl/vergadering/1391079",
+      "status": 404,
+      "finalUrl": "https://web.archive.org/web/2id_/https://zuidplas.notubiz.nl/vergadering/1391079",
+      "blocked": false,
+      "title": null,
+      "agendaCount": 0,
+      "textPreview": "",
+      "agenda": []
     }
-  ],
-  "render": {
-    "pageTitle": "Attention Required! | Cloudflare",
-    "cloudflareBlocked": true,
-    "status": "http-403",
-    "extracted": {
-      "title": "Sorry, you have been blocked",
-      "agenda": [],
-      "iframeSrcs": [],
-      "bodyTextPreview": "Sorry, you have been blocked You are unable to access notubiz.nl Why have I been blocked? This website is using a security service to protect itself from online attacks. The action you just performed triggered the security solution. There are several actions that could trigger this block including submitting a certain word or phrase, a SQL command or malformed data. What can I do to resolve this? You can email the site owner to let them know you were blocked. Please include what you were doing when this page came up and the Cloudflare Ray ID found at the bottom of this page. Cloudflare Ray ID: a1b82324eac2d688 • Your IP: Click to reveal • Performance & security by Cloudflare"
-    },
-    "networkVideo": []
-  }
+  ]
 }
