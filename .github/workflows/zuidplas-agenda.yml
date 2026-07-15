@@ -1,0 +1,58 @@
+name: Zuidplas agenda ophalen
+
+on:
+  schedule:
+    # Elke 15 minuten. Let op: GitHub schedules draaien alleen op de
+    # default branch en worden na ~60 dagen zonder repo-activiteit
+    # automatisch gepauzeerd.
+    - cron: '*/15 * * * *'
+  push:
+    # Draai ook bij een push naar de werk-branch, zodat we de scraper
+    # kunnen testen zonder eerst naar main te mergen. paths-ignore
+    # voorkomt dat de eigen data-commit de workflow opnieuw triggert.
+    branches:
+      - claude/zuidplas-livestream-tool-kiz0jd
+    paths-ignore:
+      - 'data/**'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: zuidplas-agenda
+  cancel-in-progress: true
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Installeer dependencies
+        run: npm install --no-save
+
+      - name: Installeer Chromium browser
+        run: npx playwright install --with-deps chromium
+
+      - name: Haal Zuidplas-data op
+        run: node scripts/fetch-zuidplas.mjs
+
+      - name: Commit wijzigingen (indien aanwezig)
+        run: |
+          git config user.name "bastion-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add -A data
+          # --cached ziet ook nieuwe (untracked) bestanden die net ge-add zijn.
+          if git diff --cached --quiet; then
+            echo "Geen wijzigingen in data/, niets te committen."
+          else
+            git commit -m "chore: update Zuidplas agenda data"
+            git push
+          fi
