@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-07-15T14:07:44.223Z",
+  "fetchedAt": "2026-07-15T15:48:04.968Z",
   "api": [
     {
       "url": "https://api.notubiz.nl/events/meeting/1391079?format=json&version=1.10.0",
@@ -34,7 +34,7 @@
       "title": "Sorry, you have been blocked",
       "agenda": [],
       "iframeSrcs": [],
-      "bodyTextPreview": "Sorry, you have been blocked You are unable to access notubiz.nl Why have I been blocked? This website is using a security service to protect itself from online attacks. The action you just performed triggered the security solution. There are several actions that could trigger this block including submitting a certain word or phrase, a SQL command or malformed data. What can I do to resolve this? You can email the site owner to let them know you were blocked. Please include what you were doing when this page came up and the Cloudflare Ray ID found at the bottom of this page. Cloudflare Ray ID: a1b955a6ab8f7048 • Your IP: Click to reveal • Performance & security by Cloudflare"
+      "bodyTextPreview": "Sorry, you have been blocked You are unable to access notubiz.nl Why have I been blocked? This website is using a security service to protect itself from online attacks. The action you just performed triggered the security solution. There are several actions that could trigger this block including submitting a certain word or phrase, a SQL command or malformed data. What can I do to resolve this? You can email the site owner to let them know you were blocked. Please include what you were doing when this page came up and the Cloudflare Ray ID found at the bottom of this page. Cloudflare Ray ID: a1b9e8a4399e15d9 • Your IP: Click to reveal • Performance & security by Cloudflare"
     },
     "networkVideo": []
   }
