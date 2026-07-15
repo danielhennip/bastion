@@ -21,6 +21,9 @@ Claude leest dat bestand en kan zo de vergadering **live volgen, samenvatten en
 vragen beantwoorden** — zonder de beveiliging van Notubiz te omzeilen (jij bent
 een gewone, gemachtigde kijker).
 
+> **Windows-gebruiker?** Volg de kant-en-klare handleiding in
+> [`WINDOWS.md`](WINDOWS.md) — kopieer-plak-commando's, geen giswerk.
+
 ## Wat je nodig hebt
 
 - **Node.js 18+**
