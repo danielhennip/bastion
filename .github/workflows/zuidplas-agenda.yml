@@ -48,10 +48,11 @@ jobs:
         run: |
           git config user.name "bastion-bot"
           git config user.email "actions@users.noreply.github.com"
-          if git diff --quiet -- data; then
+          git add -A data
+          # --cached ziet ook nieuwe (untracked) bestanden die net ge-add zijn.
+          if git diff --cached --quiet; then
             echo "Geen wijzigingen in data/, niets te committen."
           else
-            git add data
             git commit -m "chore: update Zuidplas agenda data"
             git push
           fi
