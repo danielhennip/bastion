@@ -9,6 +9,7 @@
 
 import { spawn, execFile } from 'node:child_process';
 import { mkdtemp, readFile, appendFile, mkdir, unlink } from 'node:fs/promises';
+import { readFileSync, existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -16,6 +17,19 @@ import { promisify } from 'node:util';
 
 const execFileP = promisify(execFile);
 const __dirname = dirname(fileURLToPath(import.meta.url));
+
+// Laad een lokaal .env-bestand (KEY=VALUE per regel) als het bestaat, zodat
+// je API-sleutel en audio-instelling niet elke keer opnieuw ingetypt hoeven.
+(function loadEnv() {
+  const envPath = join(__dirname, '.env');
+  if (!existsSync(envPath)) return;
+  for (const line of readFileSync(envPath, 'utf8').split(/\r?\n/)) {
+    const m = line.match(/^\s*([A-Z0-9_]+)\s*=\s*(.*)\s*$/i);
+    if (m && !process.env[m[1]]) {
+      process.env[m[1]] = m[2].replace(/^["']|["']$/g, '');
+    }
+  }
+})();
 
 // ── Config via env-vars ──────────────────────────────────────────
 const CHUNK_SECONDS = Number(process.env.CHUNK_SECONDS || 30);

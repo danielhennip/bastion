@@ -1,1 +1,4 @@
 node_modules/
+
+# Live-brug lokale config (bevat API-sleutel)
+tools/live-bridge/.env

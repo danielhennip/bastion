@@ -9,6 +9,34 @@ brug starten.
 
 ---
 
+## Snelste weg: twee scripts
+
+De repo bevat twee kant-en-klare PowerShell-scripts, zodat je bijna niets
+handmatig hoeft te doen.
+
+```powershell
+# 1) Repo ophalen
+git clone https://github.com/danielhennip/bastion.git
+cd bastion
+git checkout claude/zuidplas-livestream-tool-kiz0jd
+cd tools\live-bridge
+
+# 2) Eénmalige installatie (installeert Node, ffmpeg, Git; vraagt je
+#    OpenAI-sleutel en audiobron). Draai PowerShell als Administrator.
+.\setup-windows.ps1
+
+# 3) Tijdens de vergadering (stream speelt in je browser, geluid aan):
+.\start-live.ps1
+```
+
+> Als PowerShell scripts blokkeert, sta ze eerst toe voor deze sessie:
+> `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass`
+
+Werkt dat? Klaar. Wil je begrijpen wat er gebeurt of loopt iets mis, volg dan de
+handmatige stappen hieronder.
+
+---
+
 ## Eenmalig instellen
 
 ### 1. Node.js installeren
