@@ -1,0 +1,46 @@
+name: Zuidplas agenda ophalen
+
+on:
+  schedule:
+    # Elke 15 minuten. Let op: GitHub schedules draaien alleen op de
+    # default branch en worden na ~60 dagen zonder repo-activiteit
+    # automatisch gepauzeerd.
+    - cron: '*/15 * * * *'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: zuidplas-agenda
+  cancel-in-progress: true
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Installeer dependencies
+        run: npm install --no-save
+
+      - name: Haal Zuidplas-data op
+        run: node scripts/fetch-zuidplas.mjs
+
+      - name: Commit wijzigingen (indien aanwezig)
+        run: |
+          git config user.name "bastion-bot"
+          git config user.email "actions@users.noreply.github.com"
+          if git diff --quiet -- data; then
+            echo "Geen wijzigingen in data/, niets te committen."
+          else
+            git add data
+            git commit -m "chore: update Zuidplas agenda data"
+            git push
+          fi

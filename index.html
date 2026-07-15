@@ -30,6 +30,7 @@
     <button class="nav-btn" data-tab="nieuws">Nieuws</button>
     <button class="nav-btn" data-tab="conflict">Conflicten</button>
     <button class="nav-btn" data-tab="nl-politiek">NL Politiek</button>
+    <button class="nav-btn" data-tab="zuidplas">Zuidplas</button>
   </nav>
 
   <div class="header-right">
@@ -282,6 +283,81 @@
         </div>
         <div class="news-list news-list-extended" id="feed-veiligheid"></div>
       </section>
+    </div>
+  </div>
+
+  <!-- TAB: GEMEENTE ZUIDPLAS -->
+  <div class="tab-panel" id="tab-zuidplas">
+    <div class="grid-row grid-2-1">
+
+      <!-- LEFT: livestream embed -->
+      <section class="card card-tall">
+        <div class="card-header">
+          <div class="card-title">
+            <span class="card-icon">🎥</span>
+            Raadsvergadering — Gemeente Zuidplas
+          </div>
+          <span class="card-badge" id="zuidplas-badge">NOTUBIZ</span>
+        </div>
+        <div class="iframe-wrapper">
+          <iframe
+            id="zuidplas-frame"
+            title="Zuidplas raadsvergadering livestream"
+            loading="lazy"
+            allow="autoplay; fullscreen; encrypted-media"
+            allowfullscreen
+            referrerpolicy="no-referrer-when-downgrade">
+          </iframe>
+        </div>
+        <div class="iframe-fallback">
+          Zie je hierboven geen speler? Open de vergadering dan direct:
+          <a id="zuidplas-direct-link" href="https://zuidplas.notubiz.nl/vergadering/1391079" target="_blank" rel="noopener noreferrer">zuidplas.notubiz.nl →</a>
+        </div>
+      </section>
+
+      <!-- RIGHT: info + agenda -->
+      <div class="card-stack">
+        <section class="card card-compact">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="card-icon">⚙️</span>
+              Zuidplas Command Center
+            </div>
+          </div>
+          <div class="quicklinks">
+            <a href="https://zuidplas.notubiz.nl/vergadering/1391079" target="_blank" class="qlink">
+              <span class="qlink-icon">🎥</span>
+              <span>Deze vergadering</span>
+            </a>
+            <a href="https://zuidplas.notubiz.nl" target="_blank" class="qlink">
+              <span class="qlink-icon">🗓️</span>
+              <span>Alle vergaderingen</span>
+            </a>
+            <a href="https://www.zuidplas.nl/gemeenteraad" target="_blank" class="qlink">
+              <span class="qlink-icon">🏛️</span>
+              <span>Gemeenteraad Zuidplas</span>
+            </a>
+            <a href="https://www.zuidplas.nl" target="_blank" class="qlink">
+              <span class="qlink-icon">🇳🇱</span>
+              <span>Gemeente Zuidplas</span>
+            </a>
+          </div>
+        </section>
+
+        <section class="card card-compact">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="card-icon">📋</span>
+              Agenda (auto-opgehaald)
+            </div>
+            <span class="card-badge" id="zuidplas-agenda-updated">—</span>
+          </div>
+          <div class="news-list" id="zuidplas-agenda">
+            <div class="error-item">Nog geen agendadata opgehaald.</div>
+          </div>
+        </section>
+      </div>
+
     </div>
   </div>
 

@@ -1,0 +1,12 @@
+{
+  "name": "bastion-zuidplas-agent",
+  "private": true,
+  "type": "module",
+  "description": "Achtergrond-agent die de Notubiz-vergaderpagina van gemeente Zuidplas periodiek uitleest voor BASTION.",
+  "scripts": {
+    "fetch:zuidplas": "node scripts/fetch-zuidplas.mjs"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0"
+  }
+}

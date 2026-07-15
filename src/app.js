@@ -12,6 +12,11 @@ const CORS_PROXY = 'https://corsproxy.io/?';
 const WEATHER_LAT = 52.09; // Utrecht (pas aan naar jouw stad)
 const WEATHER_LON = 5.12;
 
+// Gemeente Zuidplas — Notubiz raadsvergadering
+// Pas ZUIDPLAS_MEETING_URL aan zodra er een nieuwe vergadering-ID is.
+const ZUIDPLAS_MEETING_URL = 'https://zuidplas.notubiz.nl/vergadering/1391079';
+const ZUIDPLAS_AGENDA_DATA = 'data/zuidplas.json';
+
 const FEEDS = {
   nos:       'https://feeds.nos.nl/nosnieuwsalgemeen',
   bbc:       'https://feeds.bbci.co.uk/news/world/rss.xml',
@@ -131,6 +136,7 @@ document.querySelectorAll('.nav-btn').forEach(btn => {
     if (tab === 'nieuws')     loadNieuwsTab();
     if (tab === 'conflict')   loadConflictTab();
     if (tab === 'nl-politiek') loadPolitiekTab();
+    if (tab === 'zuidplas')   loadZuidplasTab();
   });
 });
 
@@ -404,6 +410,64 @@ async function loadPolitiekTab() {
 }
 
 // ═══════════════════════════════════════════
+// TABS: Gemeente Zuidplas
+// ═══════════════════════════════════════════
+let zuidplasLoaded = false;
+async function loadZuidplasTab() {
+  if (zuidplasLoaded) return;
+  zuidplasLoaded = true;
+
+  // Livestream pas laden zodra het tabblad daadwerkelijk bekeken wordt
+  const frame = document.getElementById('zuidplas-frame');
+  if (frame && !frame.src) frame.src = ZUIDPLAS_MEETING_URL;
+
+  await loadZuidplasAgenda();
+}
+
+async function loadZuidplasAgenda() {
+  const el = document.getElementById('zuidplas-agenda');
+  const badge = document.getElementById('zuidplas-agenda-updated');
+  if (!el) return;
+
+  try {
+    const r = await fetch(ZUIDPLAS_AGENDA_DATA, { cache: 'no-store' });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const data = await r.json();
+
+    el.innerHTML = '';
+
+    if (data.title) {
+      const title = document.createElement('div');
+      title.className = 'news-title';
+      title.style.padding = '10px 14px 0';
+      title.textContent = data.title;
+      el.appendChild(title);
+    }
+
+    if (Array.isArray(data.agenda) && data.agenda.length) {
+      data.agenda.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'news-item';
+        const label = typeof item === 'string' ? item : (item.title || item.name || JSON.stringify(item));
+        div.innerHTML = `<div class="news-title">${escHtml(label)}</div>`;
+        el.appendChild(div);
+      });
+    } else {
+      el.innerHTML += `<div class="error-item">Geen agendapunten gevonden in laatste ophaal.</div>`;
+    }
+
+    if (badge) {
+      badge.textContent = data.fetchedAt ? timeAgo(data.fetchedAt) : 'onbekend';
+      badge.title = data.fetchedAt ? new Date(data.fetchedAt).toLocaleString('nl-NL') : '';
+    }
+  } catch (e) {
+    console.warn('Zuidplas-agenda ophalen mislukt:', e.message);
+    el.innerHTML = `<div class="error-item">⚠ Nog geen agendadata beschikbaar (agent moet minstens 1x gedraaid hebben).</div>`;
+    if (badge) badge.textContent = '—';
+  }
+}
+
+// ═══════════════════════════════════════════
 // REFRESH ALL
 // ═══════════════════════════════════════════
 async function refreshAll() {
@@ -411,6 +475,7 @@ async function refreshAll() {
   nieuwsLoaded = false;
   conflictTabLoaded = false;
   politiekLoaded = false;
+  zuidplasLoaded = false;
   await initDashboard();
 }
 
