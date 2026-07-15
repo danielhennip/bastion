@@ -6,6 +6,14 @@ on:
     # default branch en worden na ~60 dagen zonder repo-activiteit
     # automatisch gepauzeerd.
     - cron: '*/15 * * * *'
+  push:
+    # Draai ook bij een push naar de werk-branch, zodat we de scraper
+    # kunnen testen zonder eerst naar main te mergen. paths-ignore
+    # voorkomt dat de eigen data-commit de workflow opnieuw triggert.
+    branches:
+      - claude/zuidplas-livestream-tool-kiz0jd
+    paths-ignore:
+      - 'data/**'
   workflow_dispatch: {}
 
 permissions:
