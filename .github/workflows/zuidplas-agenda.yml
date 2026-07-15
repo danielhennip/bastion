@@ -1,19 +1,13 @@
 name: Zuidplas agenda ophalen
 
 on:
+  # Notubiz blokkeert momenteel alle geautomatiseerde toegang via Cloudflare
+  # (getest: HTTP 403 "you have been blocked" vanaf datacenter-IP's, ook met
+  # een echte headless browser). Een vaak-draaiende scraper zou dus alleen
+  # maar mislukken. Daarom alleen handmatig (workflow_dispatch) en één keer
+  # per week — mocht de blokkade ooit versoepelen, dan pikt de agent het op.
   schedule:
-    # Elke 15 minuten. Let op: GitHub schedules draaien alleen op de
-    # default branch en worden na ~60 dagen zonder repo-activiteit
-    # automatisch gepauzeerd.
-    - cron: '*/15 * * * *'
-  push:
-    # Draai ook bij een push naar de werk-branch, zodat we de scraper
-    # kunnen testen zonder eerst naar main te mergen. paths-ignore
-    # voorkomt dat de eigen data-commit de workflow opnieuw triggert.
-    branches:
-      - claude/zuidplas-livestream-tool-kiz0jd
-    paths-ignore:
-      - 'data/**'
+    - cron: '0 6 * * 1'   # elke maandag 06:00 UTC
   workflow_dispatch: {}
 
 permissions:

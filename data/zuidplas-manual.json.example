@@ -1,0 +1,12 @@
+{
+  "_uitleg": "Kopieer dit bestand naar data/zuidplas-manual.json en vul het in. Deze krijgt voorrang op de automatische (vaak geblokkeerde) scrape en verschijnt in het Zuidplas-tabblad van BASTION. Je kunt de agenda uit de Notubiz-pagina kopiëren, of Claude vragen hem te vullen op basis van tekst die je plakt.",
+  "title": "Raadsvergadering 14 juli 2026",
+  "fetchedAt": "2026-07-14T19:30:00.000Z",
+  "agenda": [
+    "1. Opening en mededelingen",
+    "2. Vaststelling agenda",
+    "3. Vragenhalfuur",
+    "4. Voorbeeld: bespreekpunt begroting",
+    "5. Sluiting"
+  ]
+}

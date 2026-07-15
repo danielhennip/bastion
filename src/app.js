@@ -15,7 +15,10 @@ const WEATHER_LON = 5.12;
 // Gemeente Zuidplas — Notubiz raadsvergadering
 // Pas ZUIDPLAS_MEETING_URL aan zodra er een nieuwe vergadering-ID is.
 const ZUIDPLAS_MEETING_URL = 'https://zuidplas.notubiz.nl/vergadering/1391079';
-const ZUIDPLAS_AGENDA_DATA = 'data/zuidplas.json';
+// Handmatig ingevuld bestand krijgt voorrang op de (vaak geblokkeerde)
+// automatische scrape. Vul data/zuidplas-manual.json met { "title": "...",
+// "agenda": ["punt 1", "punt 2", ...] } om de agenda zelf te tonen.
+const ZUIDPLAS_AGENDA_SOURCES = ['data/zuidplas-manual.json', 'data/zuidplas.json'];
 
 const FEEDS = {
   nos:       'https://feeds.nos.nl/nosnieuwsalgemeen',
@@ -429,41 +432,50 @@ async function loadZuidplasAgenda() {
   const badge = document.getElementById('zuidplas-agenda-updated');
   if (!el) return;
 
-  try {
-    const r = await fetch(ZUIDPLAS_AGENDA_DATA, { cache: 'no-store' });
-    if (!r.ok) throw new Error('HTTP ' + r.status);
-    const data = await r.json();
+  // Probeer eerst het handmatige bestand, dan de automatische scrape.
+  let data = null;
+  for (const src of ZUIDPLAS_AGENDA_SOURCES) {
+    try {
+      const r = await fetch(src, { cache: 'no-store' });
+      if (r.ok) { data = await r.json(); break; }
+    } catch (e) { /* volgende bron proberen */ }
+  }
 
-    el.innerHTML = '';
+  el.innerHTML = '';
 
-    if (data.title) {
-      const title = document.createElement('div');
-      title.className = 'news-title';
-      title.style.padding = '10px 14px 0';
-      title.textContent = data.title;
-      el.appendChild(title);
-    }
-
-    if (Array.isArray(data.agenda) && data.agenda.length) {
-      data.agenda.forEach(item => {
-        const div = document.createElement('div');
-        div.className = 'news-item';
-        const label = typeof item === 'string' ? item : (item.title || item.name || JSON.stringify(item));
-        div.innerHTML = `<div class="news-title">${escHtml(label)}</div>`;
-        el.appendChild(div);
-      });
-    } else {
-      el.innerHTML += `<div class="error-item">Geen agendapunten gevonden in laatste ophaal.</div>`;
-    }
-
-    if (badge) {
-      badge.textContent = data.fetchedAt ? timeAgo(data.fetchedAt) : 'onbekend';
-      badge.title = data.fetchedAt ? new Date(data.fetchedAt).toLocaleString('nl-NL') : '';
-    }
-  } catch (e) {
-    console.warn('Zuidplas-agenda ophalen mislukt:', e.message);
-    el.innerHTML = `<div class="error-item">⚠ Nog geen agendadata beschikbaar (agent moet minstens 1x gedraaid hebben).</div>`;
+  if (!data) {
+    el.innerHTML = `<div class="error-item">Nog geen agendadata. Vul <code>data/zuidplas-manual.json</code> of open de vergadering hiernaast.</div>`;
     if (badge) badge.textContent = '—';
+    return;
+  }
+
+  const blocked = data.cloudflareBlocked || data.dataSource === 'blocked';
+  if (data.title && !blocked) {
+    const title = document.createElement('div');
+    title.className = 'news-title';
+    title.style.padding = '10px 14px 0';
+    title.textContent = data.title;
+    el.appendChild(title);
+  }
+
+  if (Array.isArray(data.agenda) && data.agenda.length) {
+    data.agenda.forEach(item => {
+      const div = document.createElement('div');
+      div.className = 'news-item';
+      const label = typeof item === 'string' ? item : (item.title || item.name || JSON.stringify(item));
+      div.innerHTML = `<div class="news-title">${escHtml(label)}</div>`;
+      el.appendChild(div);
+    });
+  } else if (blocked) {
+    // Eerlijke melding: de automatische ophaal wordt door Notubiz geblokkeerd.
+    el.innerHTML += `<div class="error-item">⚠ Automatische ophaal geblokkeerd door Notubiz (Cloudflare-botbescherming). Bekijk de vergadering via de speler/links hiernaast; agenda kan handmatig in <code>data/zuidplas-manual.json</code>.</div>`;
+  } else {
+    el.innerHTML += `<div class="error-item">Geen agendapunten gevonden.</div>`;
+  }
+
+  if (badge) {
+    badge.textContent = data.fetchedAt ? timeAgo(data.fetchedAt) : 'handmatig';
+    badge.title = data.fetchedAt ? new Date(data.fetchedAt).toLocaleString('nl-NL') : 'Handmatig ingevuld';
   }
 }
 
