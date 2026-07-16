@@ -1,23 +1,27 @@
-// Zuidplas Live-brug — lokaal transcriberen van de live raadsvergadering.
+// Zuidplas Live-brug — lokaal transcriberen van de live raadsvergadering (v3).
 //
 // Draait op JOUW computer (thuis-/kantoor-IP), niet in Claude's omgeving:
 // alleen zo komt het geluid van de Cloudflare-beschermde Notubiz-stream binnen.
 //
-// Werking (v2 — continu, geen gaten meer):
+// Architectuur (v3):
 //   1. ffmpeg neemt ONONDERBROKEN op en knipt zelf in blokken van
-//      CHUNK_SECONDS (segment-muxer). Er gaat dus geen seconde geluid
-//      verloren, ook niet terwijl Whisper nog aan het transcriberen is.
-//   2. Een aparte verwerk-lus transcribeert de voltooide blokken op volgorde
-//      (whisper.cpp, OpenAI, of gratis lokaal via LOCAL_WHISPER=1).
-//   3. Tekst wordt doorlopend aan data/zuidplas-live.md toegevoegd, plus een
-//      statusbestand data/zuidplas-live-status.json (voor de LIVE-badge).
-//   4. Met PUSH=1 wordt er periodiek gecommit + gepusht. Fouten worden LUID
-//      gemeld (niet meer stilletjes genegeerd) met uitleg wat te doen.
+//      CHUNK_SECONDS (60s). Geen seconde geluid gaat verloren.
+//   2. whisper_worker.py (faster-whisper) laadt het model ÉÉN keer en
+//      transcribeert blok na blok — met stiltefilter en raadscontext.
+//      Modelkeuze 'auto': de pc test zichzelf en kiest het beste model
+//      dat live bijgehouden kan worden (small/medium; terugval base).
+//   3. Dit script bewaakt alles: tijdstempels, transcript-markdown,
+//      statusbestand, periodieke git push (met luide foutmeldingen).
 //
-// Zie WINDOWS.md voor setup. Config via tools/live-bridge/.env.
+// Alternatieve engines blijven werken: OPENAI_API_KEY (cloud, betaald)
+// of WHISPER_CPP+WHISPER_MODEL (whisper.cpp). LOCAL_WHISPER=1 = gratis
+// lokaal via de worker; als faster-whisper ontbreekt valt hij terug op
+// de klassieke 'whisper'-CLI (openai-whisper).
+//
+// Config via tools/live-bridge/.env — zie WINDOWS.md.
 
 import { spawn, execFile } from 'node:child_process';
-import { mkdtemp, readFile, appendFile, writeFile, mkdir, unlink, readdir, stat } from 'node:fs/promises';
+import { mkdtemp, readFile, appendFile, writeFile, mkdir, unlink, readdir, stat, rename } from 'node:fs/promises';
 import { readFileSync, existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, dirname } from 'node:path';
@@ -40,29 +44,25 @@ const REPO_DIR = join(__dirname, '..', '..');
   }
 })();
 
-// ── Config via env-vars ──────────────────────────────────────────
-const CHUNK_SECONDS = Number(process.env.CHUNK_SECONDS || 30);
+// ── Config ───────────────────────────────────────────────────────
+const CHUNK_SECONDS = Number(process.env.CHUNK_SECONDS || 60);
 const OUT_FILE = process.env.OUT_FILE || join(REPO_DIR, 'data', 'zuidplas-live.md');
 const STATUS_FILE = join(dirname(OUT_FILE), 'zuidplas-live-status.json');
 const DO_PUSH = process.env.PUSH === '1';
 const PUSH_INTERVAL_SECONDS = Number(process.env.PUSH_INTERVAL_SECONDS || 90);
-// Automatisch stoppen na N minuten (0 = doorgaan tot Ctrl+C). Gebruikt door
-// de onbemande autostart (AUTO-LIVE.cmd) zodat de brug zichzelf afsluit.
-const MAX_MINUTES = Number(process.env.MAX_MINUTES || 0);
+const MAX_MINUTES = Number(process.env.MAX_MINUTES || 0); // 0 = tot Ctrl+C
 
 const FFMPEG_FORMAT = process.env.FFMPEG_FORMAT || 'pulse';
 const FFMPEG_INPUT = process.env.FFMPEG_INPUT || 'default';
 
-// Transcriptie: whisper.cpp (WHISPER_CPP + WHISPER_MODEL), OpenAI (OPENAI_API_KEY),
-// of gratis lokaal via het Python-pakket 'openai-whisper' (LOCAL_WHISPER=1).
 const WHISPER_CPP = process.env.WHISPER_CPP;
 const WHISPER_MODEL = process.env.WHISPER_MODEL;
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const OPENAI_MODEL = process.env.OPENAI_MODEL || 'whisper-1';
 const LOCAL_WHISPER = process.env.LOCAL_WHISPER === '1';
-const LOCAL_WHISPER_MODEL_SIZE = process.env.WHISPER_MODEL_SIZE || 'base';
+const MODEL_SIZE = process.env.WHISPER_MODEL_SIZE || 'auto';
+const PYTHON = process.env.PYTHON || (process.platform === 'win32' ? 'python' : 'python3');
 
-// Context-hint voor Whisper: betere herkenning van raadsjargon en namen.
 const INITIAL_PROMPT = process.env.WHISPER_PROMPT ||
   'Vergadering van de gemeenteraad van Zuidplas. De voorzitter, wethouders en raadsleden bespreken agendapunten, moties en amendementen.';
 
@@ -75,6 +75,8 @@ function banner(lines) {
   for (const l of lines) console.log('  ' + l);
   console.log('═'.repeat(width) + '\n');
 }
+
+const chunkName = i => `chunk-${String(i).padStart(6, '0')}.wav`;
 
 // ── Continu opnemen: één ffmpeg-proces knipt zelf in segmenten ───
 function startRecorder(dir) {
@@ -105,7 +107,7 @@ function startRecorder(dir) {
   return p;
 }
 
-// ── Transcriptie-engines ─────────────────────────────────────────
+// ── Inline transcriptie-engines (OpenAI / whisper.cpp / legacy) ──
 async function transcribeWhisperCpp(wavPath) {
   await execFileP(WHISPER_CPP, [
     '-m', WHISPER_MODEL, '-f', wavPath, '-l', 'nl', '-otxt', '-nt',
@@ -131,13 +133,12 @@ async function transcribeOpenAI(wavPath) {
   return (j.text || '').trim();
 }
 
-async function transcribeLocalWhisper(wavPath) {
-  // Gratis, lokaal: het Python-pakket 'openai-whisper' (pip install openai-whisper).
-  // --condition_on_previous_text False voorkomt dat een fout in één blok
-  // doorwerkt (herhaal-hallucinaties) — elk blok staat op zichzelf.
+// Terugval als faster-whisper ontbreekt: klassieke openai-whisper CLI.
+async function transcribeLegacyWhisper(wavPath) {
   const outDir = dirname(wavPath);
+  const size = MODEL_SIZE === 'auto' ? 'base' : MODEL_SIZE;
   await execFileP('whisper', [
-    wavPath, '--model', LOCAL_WHISPER_MODEL_SIZE, '--language', 'nl',
+    wavPath, '--model', size, '--language', 'nl',
     '--output_format', 'txt', '--output_dir', outDir, '--fp16', 'False',
     '--condition_on_previous_text', 'False',
     '--initial_prompt', INITIAL_PROMPT,
@@ -149,17 +150,40 @@ async function transcribeLocalWhisper(wavPath) {
   return txt.replace(/\s+/g, ' ').trim();
 }
 
-async function transcribe(wavPath) {
-  if (WHISPER_CPP && WHISPER_MODEL) return transcribeWhisperCpp(wavPath);
-  if (OPENAI_API_KEY) return transcribeOpenAI(wavPath);
-  if (LOCAL_WHISPER) return transcribeLocalWhisper(wavPath);
-  throw new Error('Geen transcriptie-optie: zet WHISPER_CPP+WHISPER_MODEL, OPENAI_API_KEY, of LOCAL_WHISPER=1 in .env.');
+// ── faster-whisper-werker (voorkeursroute, gratis en snel) ───────
+let workerFailed = false;
+let workerExited = false;
+let workerModel = '';
+function startWorker(readyDir) {
+  const p = spawn(PYTHON, [join(__dirname, 'whisper_worker.py'), '--dir', readyDir, '--model', MODEL_SIZE]);
+  p.stdout.on('data', d => {
+    for (const line of String(d).split('\n')) {
+      if (!line.trim()) continue;
+      if (line.startsWith('READY ')) { workerModel = line.slice(6).trim(); log(`✓ Transcriptie-werker klaar (model: ${workerModel}).`); }
+      else console.log(line);
+    }
+  });
+  p.stderr.on('data', d => process.stderr.write(String(d)));
+  p.on('close', code => {
+    workerExited = true;
+    if (code === 3) {
+      workerFailed = true;
+      warn('faster-whisper niet geïnstalleerd — terugvallen op klassieke whisper-CLI (langzamer/minder goed).');
+      warn('Snelle fix: pip install faster-whisper   (daarna opnieuw starten)');
+    } else if (code !== 0 && !shuttingDown) {
+      workerFailed = true;
+      warn(`Transcriptie-werker stopte onverwacht (code ${code}) — terugvallen op klassieke whisper-CLI.`);
+    }
+  });
+  p.on('error', () => {
+    workerFailed = true;
+    warn(`Kon '${PYTHON}' niet starten — terugvallen op klassieke whisper-CLI.`);
+  });
+  return p;
 }
 
 // ── Git: luid falen, nooit stil ──────────────────────────────────
-async function git(...args) {
-  return execFileP('git', args, { cwd: REPO_DIR });
-}
+async function git(...args) { return execFileP('git', args, { cwd: REPO_DIR }); }
 
 async function ensureGitIdentity() {
   try { const { stdout } = await git('config', 'user.email'); if (stdout.trim()) return; } catch {}
@@ -175,7 +199,7 @@ async function gitPushBatch() {
     const { stdout: status } = await git('status', '--porcelain', '--', OUT_FILE, STATUS_FILE);
     if (!status.trim()) return;
     await git('commit', '-m', 'chore: update live transcript Zuidplas', '--quiet');
-    await git('pull', '--rebase', '--quiet').catch(() => {}); // haal evt. AI-notities binnen
+    await git('pull', '--rebase', '--quiet').catch(() => {});
     await git('push', 'origin', 'HEAD');
     if (pushBroken) { log('✓ Push werkt weer.'); pushBroken = false; }
     else log('✓ Transcript gepusht naar GitHub.');
@@ -204,7 +228,6 @@ async function pushSelfTest() {
   try {
     await git('push', '--dry-run', 'origin', 'HEAD');
     log('✓ GitHub-verbinding OK (push-test geslaagd).');
-    return true;
   } catch (e) {
     const msg = String((e && e.stderr) || (e && e.message) || e);
     banner([
@@ -215,19 +238,24 @@ async function pushSelfTest() {
       'Als er zojuist een browservenster opende: log daar in bij GitHub',
       'en start dit script daarna opnieuw. Transcriberen gaat wel gewoon door.',
     ]);
-    return false;
   }
 }
 
-// ── Status voor het dashboard (LIVE/OFFLINE-badge) ───────────────
+// ── Status voor het dashboard ────────────────────────────────────
 let chunksDone = 0;
+let backlogNow = 0;
 async function writeStatus(extra = {}) {
+  const engine = (LOCAL_WHISPER && !workerFailed)
+    ? `faster-whisper ${workerModel || MODEL_SIZE} (lokaal)`
+    : OPENAI_API_KEY ? OPENAI_MODEL
+    : (WHISPER_CPP ? 'whisper.cpp' : 'whisper (legacy, lokaal)');
   const status = {
     updatedAt: new Date().toISOString(),
     running: !shuttingDown,
     chunkSeconds: CHUNK_SECONDS,
     chunksDone,
-    model: LOCAL_WHISPER ? `whisper-${LOCAL_WHISPER_MODEL_SIZE} (lokaal)` : (OPENAI_API_KEY ? OPENAI_MODEL : 'whisper.cpp'),
+    backlog: backlogNow,
+    model: engine,
     ...extra,
   };
   await writeFile(STATUS_FILE, JSON.stringify(status, null, 2) + '\n').catch(() => {});
@@ -238,98 +266,144 @@ let shuttingDown = false;
 
 async function main() {
   await mkdir(dirname(OUT_FILE), { recursive: true });
-  const tmp = await mkdtemp(join(tmpdir(), 'zuidplas-live-'));
+  const recDir = await mkdtemp(join(tmpdir(), 'zuidplas-rec-'));
+  const readyDir = await mkdtemp(join(tmpdir(), 'zuidplas-ready-'));
 
-  log(`Live-brug v2 gestart. Continu opnemen in blokken van ${CHUNK_SECONDS}s.`);
+  const useWorker = LOCAL_WHISPER && !OPENAI_API_KEY && !WHISPER_CPP;
+
+  log(`Live-brug v3 gestart. Continu opnemen in blokken van ${CHUNK_SECONDS}s.`);
   log('Transcript →', OUT_FILE);
   log(DO_PUSH ? `Auto-push AAN (elke ~${PUSH_INTERVAL_SECONDS}s).` : 'Auto-push UIT (zet PUSH=1 in .env voor live sync).');
+  if (MAX_MINUTES > 0) log(`Stopt automatisch na ${MAX_MINUTES} minuten.`);
 
-  if (DO_PUSH) {
-    await ensureGitIdentity();
-    await pushSelfTest();
-  }
+  if (DO_PUSH) { await ensureGitIdentity(); await pushSelfTest(); }
 
   await appendFile(OUT_FILE, `\n\n## Sessie gestart ${new Date().toLocaleString('nl-NL')}\n\n`);
   await writeStatus();
 
-  const recorder = startRecorder(tmp);
+  const recorder = startRecorder(recDir);
+  let recorderExited = false;
+  // Let op: bij een kill-signaal blijft child.exitCode voor altijd null —
+  // daarom een expliciete vlag via het exit-event.
+  recorder.on('exit', () => { recorderExited = true; });
+  const worker = useWorker ? startWorker(readyDir) : null;
   const sessionStart = Date.now();
 
   process.on('SIGINT', () => {
     if (shuttingDown) process.exit(1);
     shuttingDown = true;
-    log('Stoppen… (laatste blokken worden nog verwerkt)');
+    log('Stoppen… (resterende blokken worden nog verwerkt)');
     try { recorder.kill(); } catch {}
   });
 
-  let next = 0;              // volgend te verwerken segment-nummer
+  let moved = 0;    // volgende op te pakken opname
+  let outIdx = 0;   // volgende te verwachten transcript
+  let shutdownAt = 0;
   let lastPush = Date.now();
   let lagWarned = false;
+  const stampFor = i => new Date(sessionStart + i * CHUNK_SECONDS * 1000).toLocaleTimeString('nl-NL');
 
-  const chunkName = i => `chunk-${String(i).padStart(6, '0')}.wav`;
-
-  while (true) {
-    if (MAX_MINUTES > 0 && !shuttingDown && Date.now() - sessionStart > MAX_MINUTES * 60 * 1000) {
-      shuttingDown = true;
-      log(`Maximale duur van ${MAX_MINUTES} min bereikt — netjes afronden…`);
-      try { recorder.kill(); } catch {}
+  async function emit(idx, text) {
+    if (text) {
+      await appendFile(OUT_FILE, `**[${stampFor(idx)}]** ${text}\n\n`);
+      log(`[blok ${idx}] + ${text.slice(0, 90)}${text.length > 90 ? '…' : ''}`);
+    } else {
+      log(`[blok ${idx}] (stilte)`);
     }
-    // Segment `next` is klaar zodra segment `next+1` bestaat (ffmpeg is er
-    // dan zeker mee klaar), of zodra ffmpeg gestopt is (laatste segment).
-    const files = new Set(await readdir(tmp).catch(() => []));
-    const currentDone = files.has(chunkName(next)) &&
-      (files.has(chunkName(next + 1)) || recorder.exitCode !== null);
-
-    if (!currentDone) {
-      if (shuttingDown && recorder.exitCode !== null && !files.has(chunkName(next))) break;
-      await new Promise(r => setTimeout(r, 1500));
-      continue;
-    }
-
-    const wav = join(tmp, chunkName(next));
-    // Wandkloktijd van het BEGIN van dit blok — zo kloppen de tijdstempels
-    // ook als de transcriptie achterloopt.
-    const stamp = new Date(sessionStart + next * CHUNK_SECONDS * 1000).toLocaleTimeString('nl-NL');
-
-    try {
-      const size = (await stat(wav)).size;
-      if (size > 44) { // niet-lege WAV
-        const text = await transcribe(wav);
-        if (text) {
-          await appendFile(OUT_FILE, `**[${stamp}]** ${text}\n\n`);
-          log(`[blok ${next}] + ${text.slice(0, 90)}${text.length > 90 ? '…' : ''}`);
-        } else {
-          log(`[blok ${next}] (stilte)`);
-        }
-      }
-      chunksDone++;
-      await writeStatus();
-    } catch (e) {
-      warn(`Blok ${next} mislukt:`, String((e && e.message) || e).slice(0, 300));
-    }
-    await unlink(wav).catch(() => {});
-    next++;
-
-    // Achterstands-bewaking: hoeveel voltooide blokken wachten er nog?
-    const backlog = [...files].filter(f => /^chunk-\d+\.wav$/.test(f)).length - 1;
-    if (backlog >= 3 && !lagWarned) {
-      lagWarned = true;
-      warn(`Transcriptie loopt ${backlog} blokken (~${backlog * CHUNK_SECONDS}s) achter.`);
-      warn(`Tip: zet in .env een sneller model (WHISPER_MODEL_SIZE=base of tiny).`);
-    } else if (backlog <= 1) {
-      lagWarned = false;
-    }
-
+    chunksDone++;
+    await writeStatus();
     if (DO_PUSH && Date.now() - lastPush > PUSH_INTERVAL_SECONDS * 1000) {
       lastPush = Date.now();
       await gitPushBatch();
     }
   }
 
+  let recovered = false;
+  while (true) {
+    // Werker uitgevallen? Zet nog niet verwerkte blokken terug zodat de
+    // klassieke route (whisper-CLI) ze alsnog oppakt — niets raakt kwijt.
+    if (useWorker && workerFailed && !recovered) {
+      recovered = true;
+      for (const f of (await readdir(readyDir).catch(() => []))) {
+        if (f.endsWith('.wav')) await rename(join(readyDir, f), join(recDir, f)).catch(() => {});
+      }
+      moved = outIdx;
+    }
+    if (MAX_MINUTES > 0 && !shuttingDown && Date.now() - sessionStart > MAX_MINUTES * 60 * 1000) {
+      shuttingDown = true;
+      log(`Maximale duur van ${MAX_MINUTES} min bereikt — netjes afronden…`);
+      try { recorder.kill(); } catch {}
+    }
+
+    // 1. Voltooide opnames doorzetten (blok i is klaar als i+1 bestaat of ffmpeg stopte).
+    const recFiles = new Set(await readdir(recDir).catch(() => []));
+    while (recFiles.has(chunkName(moved)) &&
+           (recFiles.has(chunkName(moved + 1)) || recorderExited)) {
+      const src = join(recDir, chunkName(moved));
+      const size = (await stat(src).catch(() => ({ size: 0 }))).size;
+      if (size <= 44) { await unlink(src).catch(() => {}); if (useWorker && !workerFailed) outIdx = Math.max(outIdx, moved + 1); moved++; continue; }
+      if (useWorker && !workerFailed) {
+        await rename(src, join(readyDir, chunkName(moved)));
+      } else {
+        // Inline engine: hier direct transcriberen (blokkeert het doorzetten niet lang,
+        // want de opname loopt in ffmpeg gewoon door).
+        let text = '';
+        try {
+          text = OPENAI_API_KEY ? await transcribeOpenAI(src)
+               : WHISPER_CPP ? await transcribeWhisperCpp(src)
+               : await transcribeLegacyWhisper(src);
+        } catch (e) {
+          warn(`Blok ${moved} mislukt:`, String((e && e.message) || e).slice(0, 300));
+        }
+        await unlink(src).catch(() => {});
+        await emit(moved, text);
+        outIdx = moved + 1;
+      }
+      moved++;
+    }
+
+    // 2. Resultaten van de werker ophalen (op volgorde).
+    if (useWorker && !workerFailed) {
+      while (true) {
+        const txtPath = join(readyDir, chunkName(outIdx).replace('.wav', '.txt'));
+        const txt = await readFile(txtPath, 'utf8').catch(() => null);
+        if (txt === null) break;
+        await unlink(txtPath).catch(() => {});
+        await emit(outIdx, txt.replace(/\s+/g, ' ').trim());
+        outIdx++;
+      }
+      backlogNow = moved - outIdx;
+      if (backlogNow >= 3 && !lagWarned) {
+        lagWarned = true;
+        warn(`Transcriptie loopt ${backlogNow} blokken (~${backlogNow * CHUNK_SECONDS}s) achter — de werker haalt dit meestal in tijdens stiltes.`);
+      } else if (backlogNow <= 1) lagWarned = false;
+    }
+
+    // 3. Klaar? Alles opgenomen én alles getranscribeerd.
+    if (shuttingDown && recorderExited) {
+      if (!shutdownAt) shutdownAt = Date.now();
+      const leftover = (await readdir(recDir).catch(() => [])).some(f => f.endsWith('.wav'));
+      const workerAlive = worker && !workerExited && !workerFailed;
+      const pending = useWorker && workerAlive && outIdx < moved;
+      if (!leftover && !pending) break;
+      if ((Date.now() - shutdownAt) % 10000 < 1600) {
+        log(`Afronden… (nog te verwerken: opnames=${leftover ? 'ja' : 'nee'}, transcripties=${Math.max(0, moved - outIdx)}, werker=${workerAlive ? 'actief' : 'gestopt'})`);
+      }
+      if (Date.now() - shutdownAt > 15 * 60 * 1000) {
+        warn('Afronden duurt te lang (>15 min) — stoppen met wat er is. Transcript tot hier is compleet opgeslagen.');
+        break;
+      }
+    }
+
+    await new Promise(r => setTimeout(r, 1500));
+  }
+
+  if (worker) { await writeFile(join(readyDir, 'STOP'), '').catch(() => {}); }
   await writeStatus({ running: false });
   await appendFile(OUT_FILE, `\n_Sessie beëindigd ${new Date().toLocaleString('nl-NL')}._\n`);
   if (DO_PUSH) await gitPushBatch();
   log('Live-brug gestopt. Alles verwerkt en opgeslagen.');
+  process.exit(process.exitCode || 0);
 }
 
 main().catch(e => { console.error(e); process.exit(1); });

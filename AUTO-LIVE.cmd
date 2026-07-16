@@ -43,8 +43,12 @@ echo [3/4] 45 seconden wachten tot de stream speelt...
 timeout /t 45 /nobreak >nul
 
 echo [4/4] Live-brug starten (stopt vanzelf na afloop)...
+rem Snelle transcriptie-engine installeren als die er nog niet is (eenmalig).
+pip show faster-whisper >nul 2>&1 || pip install --quiet faster-whisper
+rem Oude vaste modelkeuze migreren naar automatische keuze (eenmalig).
+powershell -NoProfile -Command "$f='tools\live-bridge\.env'; if (Test-Path $f) { (Get-Content $f) -replace '^WHISPER_MODEL_SIZE=(base|tiny)$','WHISPER_MODEL_SIZE=auto' | Set-Content $f }"
 cd tools\live-bridge
-if not defined MAX_MINUTES set "MAX_MINUTES=240"
+if not defined MAX_MINUTES set "MAX_MINUTES=600"
 node transcribe.mjs
 
 echo Klaar. Venster sluit over 30 seconden.

@@ -67,7 +67,11 @@ run even of de speler daar echt vanzelf begint te spelen.
 ## Eenmalig instellen (op deze laptop al gebeurd ✅)
 
 1. **Software**: Git, ffmpeg, Node.js, Python 3 — geïnstalleerd via `winget`.
-2. **Whisper (gratis, lokaal)**: `pip install openai-whisper` — gedaan.
+2. **Transcriptie-engine (gratis, lokaal)**: faster-whisper — wordt door de
+   startknoppen zelf geïnstalleerd als hij ontbreekt. Bij de eerste run test
+   de pc zichzelf en kiest automatisch het beste model dat hij live kan
+   bijhouden (small of medium; het eerste blok duurt daardoor wat langer —
+   modeldownload van honderden MB's, eenmalig).
 3. **Stereo Mix** aangezet: Geluidsinstellingen → tab Opnemen → rechtsklik →
    "Uitgeschakelde apparaten weergeven" → Stereo Mix → Inschakelen.
    - Geen Stereo Mix op jouw pc? Installeer gratis VB-CABLE
@@ -78,9 +82,12 @@ run even of de speler daar echt vanzelf begint te spelen.
    FFMPEG_FORMAT=dshow
    FFMPEG_INPUT=audio=Stereo Mix (Realtek(R) Audio)
    LOCAL_WHISPER=1
-   WHISPER_MODEL_SIZE=base
+   WHISPER_MODEL_SIZE=auto
    PUSH=1
    ```
+
+   (`auto` = de pc kiest zelf het beste model; een oude regel met `base`
+   wordt door de startknoppen automatisch omgezet naar `auto`.)
 
 5. **GitHub-login (één keer)**: bij de eerste push opent Windows een
    browservenster om in te loggen bij GitHub. Daarna onthoudt de laptop het.
@@ -96,9 +103,12 @@ run even of de speler daar echt vanzelf begint te spelen.
 - **ffmpeg-fout bij start** → apparaatnaam in `FFMPEG_INPUT` klopt niet
   exact, of Stereo Mix staat uit/op mute. Naam opzoeken:
   `ffmpeg -hide_banner -list_devices true -f dshow -i dummy`
-- **"Transcriptie loopt X blokken achter"** → je pc kan het model niet
-  bijbenen. Zet in `.env`: `WHISPER_MODEL_SIZE=tiny` (sneller) — of juist
-  `small` als je pc snel genoeg is en je betere kwaliteit wilt.
+- **"Transcriptie loopt X blokken achter"** → meestal loopt dit tijdens
+  stiltes vanzelf weer in. Blijft het oplopen: verwijder
+  `tools\live-bridge\.model-choice.json` en start opnieuw — de pc kiest dan
+  opnieuw (en conservatiever) een model.
+- **Slechte tekstkwaliteit** → controleer dat `.env` `WHISPER_MODEL_SIZE=auto`
+  bevat en verwijder `.model-choice.json` zodat de keuzetest opnieuw draait.
 - **Lege of onzinnige tekst** → controleer dat de stream écht hoorbaar
   speelt (volume aan, juiste uitvoerapparaat) en dat er gesproken wordt.
 - **Niets in het dashboard** → kijk of het venster "✓ Transcript gepusht"
