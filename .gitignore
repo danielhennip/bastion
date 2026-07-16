@@ -2,3 +2,5 @@ node_modules/
 
 # Live-brug lokale config (bevat API-sleutel)
 tools/live-bridge/.env
+tools/live-bridge/.model-choice.json
+tools/live-bridge/__pycache__/

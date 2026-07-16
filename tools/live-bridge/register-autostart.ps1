@@ -33,7 +33,7 @@ $trigger = New-ScheduledTaskTrigger -Weekly -DaysOfWeek $Day -At $Time
 $action  = New-ScheduledTaskAction -Execute $cmdPath -WorkingDirectory $repoRoot
 $settings = New-ScheduledTaskSettingsSet -StartWhenAvailable `
   -DontStopIfGoingOnBatteries -AllowStartIfOnBatteries `
-  -ExecutionTimeLimit (New-TimeSpan -Hours 6)
+  -ExecutionTimeLimit (New-TimeSpan -Hours 11)
 
 Register-ScheduledTask -TaskName $taskName -Trigger $trigger -Action $action `
   -Settings $settings -Description 'Start automatisch de Zuidplas live-transcriptie op vergaderavond.' -Force | Out-Null

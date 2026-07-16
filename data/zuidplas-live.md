@@ -33,3 +33,33 @@ en toont het dashboard "OFFLINE".
 
 **[21:57:39]** Daarna verslecht het financiële beeld verder, met de kort in alle jaren tot de met 2030. Naverwerking van de mei-siculaire wordt het beeld wel eens wat iets gunstiger, maar ook dan blijft er in 2019 nog een tekort bestaan. Maar hoe komen we in deze situatie? Het is een aantal keer genoemd? Allereerst het gemeentevonds. De rijkspijdragen aan een gemeent is de afgelopen periode strukturel onzekerder geworden en voor Zuidplas als na de hoge gemeente noglastiger. Het tweede punt is het sociale domain. De strukturele effecten uit de Ski juichen.
 
+
+
+## Sessie gestart 16-7-2026, 20:54:10
+
+**[20:54:10]** Maar ook een booit te zien dat er weer de nodige belangstelling is in ieder geval op de 3-bunen, ochtvijfeltok, familiefrienden van aankomen de raadsleden, dat kom ik straks bij. Vanuit welkom ook vooral en de mensen thuis natuurlijk. Maar voor ik open zou ik u ingerst even om een ogenblikje stil te willen vragen.
+
+**[20:54:40]** Ik hoop in de vergadering. Vandaar hebben we vooral aandacht voor het onderwerp van de zomernoten. Dat is de plek waarin in zowel gekeken wordt. Wat er nu komt aan de nodig is als waarin het een voorjaarsnoten als een kaarde noten waarin wat enig jarenvruid wordt geplikt als het gaat om alle inspanningen die wij ons gemeenten doen.
+
+**[20:55:10]** Ik ben bij behoor in de financiën inzetverkapiciteit voor de kopen de jaren, maar ik zei elke verstaakse ook nog de toemlaat ik van twee nieuwe raadsleden in ons minne. Dat is mooi, maar voor ik daarvoor ben, en gendapunten kan ik eerst melden dat ik twee afmelding heb, de heer versluis en de heer, sorry, de heer verdoeksendeer per denk, ik zie ervallig dat het twee leeg plek voor meneer Verstaus, u bent een plekje nachtig geschrofen.
+
+**[20:55:40]** En die heeft versluitszaal, die heeft verdoers als fractie voorzitter vandaag waarnemen. Dan kom ik bij Agenda.2. Vraag kwartieractualiteit. En we hebben twee zets vragen vanwege de tijd. Wil ik vragen of het de collega direct gaan antwoorden worden? De eerste zet vragen zijn van de VVD van de caramel op het scherm achter ons, ervoor ons getoond.
+
+**[20:56:10]** Ik ben voor de Lieferber en dan vraag ik het colletje werd houden klovertom, die is snel te bandwoorden. Daarnaag kijk ik even in IKARMAL of u nog een vraag heest en anders of er nog aansluiten het uit van de andere vraksiesbofd is of nog een aafwullen de vraag te stellen en daarbij in de geoteer. En ik kan hem al, hoe heen ik vooral? Nou voorzitter, ik was eigenlijk voornemers om dit inledend een klein beetje toe te lichten wat van contexten voorzien of wordt dat...
+
+**[20:56:40]** Dat voort niet verlangt, we doen normaal gesproken even de vragen ook om ur zelfs spreken te besparen. En dat vindt de herboden naar uw fractie voorzitter, denk je weer prettig. Ja, goed, woord is aan het colletje, de Eerklavond. Dank u wel voorzitter. Anders op de eerste vraag, ja, dat klopt. Ja, ik kan hem niet mooier maken dan dat. Tweede vraag. Er heeft overleg plaats gevonden met schoolbestuur en...
+
+**[20:57:10]** En directie, en er is ambtreldig gekeken aan de mogelijkheden voor mede gebruik in een andere school. Het schoolbezoer en de directie geven er de voorker aan om de kinderen binnen het eigen schopgebouw op te vangen. En onderwijs kundig is dat op zich logisch. Gisteren heb ik hiervoor ook een gesprek gevoerd net zowel het bestuur de dichter als leden van de MR. voor nu zal een activiteitere sledge geen lokaal voor kleuters worden ingericht als
+
+**[20:57:40]** De voorbereidingen van de vergunningen aanvraag, lopen nog en ook het lokal, het gebouwje is besteld. De planning is hier uiteindelijk afhankelijk van. We streven ernaar om dit uiterlijk in het laatste kwartal liefst eerder en ik heb daar gisteren een gesprek over gevoerd wat mij betreft. Natuurlijk zeker liefst eerder, maar ik wil me niet vastleggen op dat genaar ik zijn grip op heb.
+
+**[20:58:10]** En ik hecht daarbij en dat wil ik bewust, nadrukkelijk ook hier zeggen. Ik hecht daarbij, gezien ook de externe kritiek op het schoolbestuur en op de directeur, want daar ben ik gister best van geschrokken, om aan te geven dat de reden van de vertraging eigenlijk primair aan onze kant ligt. Dan het antwoord op de laatste vraag, we zijn in de dat bekend met het vrouw extra kosten en het is gister te beschroken en zo ook uit...
+
+**[20:58:40]** De gemeenteraad onderwerp van gesprek zijn. Dank u wel. Ik kijk even met een kartman heeft u nog aanvullende behoefte aan de vraag. Ja, dat heeft u. Ja, voorzitter, ik vind het mooi hoe het collega hier antwoord opgeeft, ook mooi, dat ze de hand in eigen boezermen steken. Ik vertrouw erop dat dat er zo snel mogelijk de benoten in de benoten van de leslokalen worden voorzien.
+
+**[20:59:10]** Hoopelijk, ik kan me voorstellen dat de hersen van kans hier mooi om mensen zou zijn. Dat bent u vast met mij eens. Ik snap dat u zich daar niet op kan toelijgen, maar dank voor de uw beantwoording.
+
+**[20:59:40]** Machen het collega's je ook vragen of dat ze ook toch zijn dat er andere scholen zijn met hetzelfde problematieke dat daar dezelfde aandacht naar uitgaat voor een noodlokaan.
+
+**[21:00:10]** Dan is er een tweede set vragen, mondelingen vragen van platform-zaadplassen over de situatie waar te gangen in relatiek tot boodtuelisme. Ook hier hetzelfde te vragen staan op de schermen. en namens het collatier Antwoord-Wethouder van Rijne. En nu meer van Rijne.
+

@@ -24,6 +24,13 @@ echo.
 echo [2/3] Controle van de installatie...
 where node >nul 2>&1 || (echo   FOUT: Node.js niet gevonden. Zie tools\live-bridge\WINDOWS.md & pause & exit /b 1)
 where ffmpeg >nul 2>&1 || (echo   FOUT: ffmpeg niet gevonden. Zie tools\live-bridge\WINDOWS.md & pause & exit /b 1)
+rem Snelle transcriptie-engine installeren als die er nog niet is (eenmalig).
+pip show faster-whisper >nul 2>&1 || (
+  echo   faster-whisper installeren voor betere en snellere transcriptie...
+  pip install --quiet faster-whisper
+)
+rem Oude vaste modelkeuze migreren naar automatische keuze (eenmalig).
+powershell -NoProfile -Command "$f='tools\live-bridge\.env'; if (Test-Path $f) { (Get-Content $f) -replace '^WHISPER_MODEL_SIZE=(base|tiny)$','WHISPER_MODEL_SIZE=auto' | Set-Content $f }"
 if not exist "tools\live-bridge\.env" (
   echo   FOUT: tools\live-bridge\.env ontbreekt. Zie tools\live-bridge\WINDOWS.md
   pause
