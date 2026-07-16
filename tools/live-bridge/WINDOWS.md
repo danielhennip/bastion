@@ -54,6 +54,9 @@ Voorwaarden: laptop aan + jij ingelogd. Andere dag of tijd? In PowerShell:
 `powershell -ExecutionPolicy Bypass -File tools\live-bridge\register-autostart.ps1 -Day Monday -Time 19:25`
 Uitzetten: zelfde script met `-Remove`.
 
+De knop/autostart opent de stream in je **standaardbrowser**. Andere browser
+afdwingen? Zet in `.env` bijv. `LIVE_BROWSER=chrome` (of `msedge`/`brave`).
+
 Tip: zet in `.env` een regel `LIVE_URL=https://zuidplas.notubiz.nl/vergadering/…`
 met de juiste vergadering-URL zodra die bekend is; zonder die regel opent de
 autostart de algemene Notubiz-portal. Controleer bij de eerste automatische

@@ -18,12 +18,26 @@ if not errorlevel 1 (
 )
 
 echo [2/4] Stream openen in de browser (autoplay aan)...
-rem LIVE_URL uit tools\live-bridge\.env lezen; anders de Notubiz-portal.
+rem LIVE_URL/LIVE_BROWSER uit tools\live-bridge\.env lezen.
 set "LIVE_URL=https://zuidplas.notubiz.nl"
+set "LIVE_BROWSER="
 for /f "usebackq tokens=1,* delims==" %%a in ("tools\live-bridge\.env") do (
   if /i "%%a"=="LIVE_URL" set "LIVE_URL=%%b"
+  if /i "%%a"=="LIVE_BROWSER" set "LIVE_BROWSER=%%b"
 )
-start "" msedge --autoplay-policy=no-user-gesture-required --new-window "%LIVE_URL%"
+rem Geen voorkeur ingesteld? Kijk welke browser de standaard is in Windows.
+set "PROGID="
+for /f "tokens=3" %%i in ('reg query "HKCU\Software\Microsoft\Windows\Shell\Associations\UrlAssociations\https\UserChoice" /v ProgId 2^>nul') do set "PROGID=%%i"
+if not defined LIVE_BROWSER echo %PROGID% | findstr /i chrome  >nul && set "LIVE_BROWSER=chrome"
+if not defined LIVE_BROWSER echo %PROGID% | findstr /i brave   >nul && set "LIVE_BROWSER=brave"
+if not defined LIVE_BROWSER echo %PROGID% | findstr /i edge    >nul && set "LIVE_BROWSER=msedge"
+if defined LIVE_BROWSER (
+  rem Chromium-browsers: autoplay afdwingen zodat de stream vanzelf speelt.
+  start "" %LIVE_BROWSER% --autoplay-policy=no-user-gesture-required --new-window "%LIVE_URL%"
+) else (
+  rem Onbekende/andere standaardbrowser (bijv. Firefox): gewoon openen.
+  start "" "%LIVE_URL%"
+)
 
 echo [3/4] 45 seconden wachten tot de stream speelt...
 timeout /t 45 /nobreak >nul
