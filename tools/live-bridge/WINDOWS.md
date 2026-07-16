@@ -6,6 +6,16 @@ leest mee, maakt AI-aantekeningen, en het dashboard toont beide live.
 
 ---
 
+## Snelste manier: de bureaublad-knop (1 klik)
+
+Dubbelklik **één keer** op `MAAK-BUREAUBLAD-KNOP.cmd` (hoofdmap van de
+repo). Daarna staat er een knop **"Zuidplas LIVE"** op je bureaublad:
+dubbelklik daarop en alles gaat vanzelf aan — stream openen, transcriberen,
+en na 4 uur netjes stoppen. Handmatig eerder stoppen: Ctrl + C in het
+zwarte venster.
+
+---
+
 ## Elke vergadering: zó start je (2 stappen)
 
 1. Open de vergadering in je browser en start de uitzending, **geluid aan**
