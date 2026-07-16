@@ -33,3 +33,9 @@ en toont het dashboard "OFFLINE".
 
 **[21:57:39]** Daarna verslecht het financiële beeld verder, met de kort in alle jaren tot de met 2030. Naverwerking van de mei-siculaire wordt het beeld wel eens wat iets gunstiger, maar ook dan blijft er in 2019 nog een tekort bestaan. Maar hoe komen we in deze situatie? Het is een aantal keer genoemd? Allereerst het gemeentevonds. De rijkspijdragen aan een gemeent is de afgelopen periode strukturel onzekerder geworden en voor Zuidplas als na de hoge gemeente noglastiger. Het tweede punt is het sociale domain. De strukturele effecten uit de Ski juichen.
 
+
+
+## Sessie gestart 16-7-2026, 20:54:10
+
+**[20:54:10]** Maar ook een booit te zien dat er weer de nodige belangstelling is in ieder geval op de 3-bunen, ochtvijfeltok, familiefrienden van aankomen de raadsleden, dat kom ik straks bij. Vanuit welkom ook vooral en de mensen thuis natuurlijk. Maar voor ik open zou ik u ingerst even om een ogenblikje stil te willen vragen.
+
