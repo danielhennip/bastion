@@ -51,3 +51,7 @@ en toont het dashboard "OFFLINE".
 
 **[20:57:10]** En directie, en er is ambtreldig gekeken aan de mogelijkheden voor mede gebruik in een andere school. Het schoolbezoer en de directie geven er de voorker aan om de kinderen binnen het eigen schopgebouw op te vangen. En onderwijs kundig is dat op zich logisch. Gisteren heb ik hiervoor ook een gesprek gevoerd net zowel het bestuur de dichter als leden van de MR. voor nu zal een activiteitere sledge geen lokaal voor kleuters worden ingericht als
 
+**[20:57:40]** De voorbereidingen van de vergunningen aanvraag, lopen nog en ook het lokal, het gebouwje is besteld. De planning is hier uiteindelijk afhankelijk van. We streven ernaar om dit uiterlijk in het laatste kwartal liefst eerder en ik heb daar gisteren een gesprek over gevoerd wat mij betreft. Natuurlijk zeker liefst eerder, maar ik wil me niet vastleggen op dat genaar ik zijn grip op heb.
+
+**[20:58:10]** En ik hecht daarbij en dat wil ik bewust, nadrukkelijk ook hier zeggen. Ik hecht daarbij, gezien ook de externe kritiek op het schoolbestuur en op de directeur, want daar ben ik gister best van geschrokken, om aan te geven dat de reden van de vertraging eigenlijk primair aan onze kant ligt. Dan het antwoord op de laatste vraag, we zijn in de dat bekend met het vrouw extra kosten en het is gister te beschroken en zo ook uit...
+
