@@ -43,3 +43,7 @@ en toont het dashboard "OFFLINE".
 
 **[20:55:10]** Ik ben bij behoor in de financiën inzetverkapiciteit voor de kopen de jaren, maar ik zei elke verstaakse ook nog de toemlaat ik van twee nieuwe raadsleden in ons minne. Dat is mooi, maar voor ik daarvoor ben, en gendapunten kan ik eerst melden dat ik twee afmelding heb, de heer versluis en de heer, sorry, de heer verdoeksendeer per denk, ik zie ervallig dat het twee leeg plek voor meneer Verstaus, u bent een plekje nachtig geschrofen.
 
+**[20:55:40]** En die heeft versluitszaal, die heeft verdoers als fractie voorzitter vandaag waarnemen. Dan kom ik bij Agenda.2. Vraag kwartieractualiteit. En we hebben twee zets vragen vanwege de tijd. Wil ik vragen of het de collega direct gaan antwoorden worden? De eerste zet vragen zijn van de VVD van de caramel op het scherm achter ons, ervoor ons getoond.
+
+**[20:56:10]** Ik ben voor de Lieferber en dan vraag ik het colletje werd houden klovertom, die is snel te bandwoorden. Daarnaag kijk ik even in IKARMAL of u nog een vraag heest en anders of er nog aansluiten het uit van de andere vraksiesbofd is of nog een aafwullen de vraag te stellen en daarbij in de geoteer. En ik kan hem al, hoe heen ik vooral? Nou voorzitter, ik was eigenlijk voornemers om dit inledend een klein beetje toe te lichten wat van contexten voorzien of wordt dat...
+
