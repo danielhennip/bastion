@@ -55,3 +55,7 @@ en toont het dashboard "OFFLINE".
 
 **[20:58:10]** En ik hecht daarbij en dat wil ik bewust, nadrukkelijk ook hier zeggen. Ik hecht daarbij, gezien ook de externe kritiek op het schoolbestuur en op de directeur, want daar ben ik gister best van geschrokken, om aan te geven dat de reden van de vertraging eigenlijk primair aan onze kant ligt. Dan het antwoord op de laatste vraag, we zijn in de dat bekend met het vrouw extra kosten en het is gister te beschroken en zo ook uit...
 
+**[20:58:40]** De gemeenteraad onderwerp van gesprek zijn. Dank u wel. Ik kijk even met een kartman heeft u nog aanvullende behoefte aan de vraag. Ja, dat heeft u. Ja, voorzitter, ik vind het mooi hoe het collega hier antwoord opgeeft, ook mooi, dat ze de hand in eigen boezermen steken. Ik vertrouw erop dat dat er zo snel mogelijk de benoten in de benoten van de leslokalen worden voorzien.
+
+**[20:59:10]** Hoopelijk, ik kan me voorstellen dat de hersen van kans hier mooi om mensen zou zijn. Dat bent u vast met mij eens. Ik snap dat u zich daar niet op kan toelijgen, maar dank voor de uw beantwoording.
+
