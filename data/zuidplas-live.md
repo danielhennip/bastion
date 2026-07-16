@@ -59,3 +59,7 @@ en toont het dashboard "OFFLINE".
 
 **[20:59:10]** Hoopelijk, ik kan me voorstellen dat de hersen van kans hier mooi om mensen zou zijn. Dat bent u vast met mij eens. Ik snap dat u zich daar niet op kan toelijgen, maar dank voor de uw beantwoording.
 
+**[20:59:40]** Machen het collega's je ook vragen of dat ze ook toch zijn dat er andere scholen zijn met hetzelfde problematieke dat daar dezelfde aandacht naar uitgaat voor een noodlokaan.
+
+**[21:00:10]** Dan is er een tweede set vragen, mondelingen vragen van platform-zaadplassen over de situatie waar te gangen in relatiek tot boodtuelisme. Ook hier hetzelfde te vragen staan op de schermen. en namens het collatier Antwoord-Wethouder van Rijne. En nu meer van Rijne.
+
