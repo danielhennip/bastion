@@ -39,3 +39,7 @@ en toont het dashboard "OFFLINE".
 
 **[20:54:10]** Maar ook een booit te zien dat er weer de nodige belangstelling is in ieder geval op de 3-bunen, ochtvijfeltok, familiefrienden van aankomen de raadsleden, dat kom ik straks bij. Vanuit welkom ook vooral en de mensen thuis natuurlijk. Maar voor ik open zou ik u ingerst even om een ogenblikje stil te willen vragen.
 
+**[20:54:40]** Ik hoop in de vergadering. Vandaar hebben we vooral aandacht voor het onderwerp van de zomernoten. Dat is de plek waarin in zowel gekeken wordt. Wat er nu komt aan de nodig is als waarin het een voorjaarsnoten als een kaarde noten waarin wat enig jarenvruid wordt geplikt als het gaat om alle inspanningen die wij ons gemeenten doen.
+
+**[20:55:10]** Ik ben bij behoor in de financiën inzetverkapiciteit voor de kopen de jaren, maar ik zei elke verstaakse ook nog de toemlaat ik van twee nieuwe raadsleden in ons minne. Dat is mooi, maar voor ik daarvoor ben, en gendapunten kan ik eerst melden dat ik twee afmelding heb, de heer versluis en de heer, sorry, de heer verdoeksendeer per denk, ik zie ervallig dat het twee leeg plek voor meneer Verstaus, u bent een plekje nachtig geschrofen.
+
