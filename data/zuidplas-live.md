@@ -47,3 +47,7 @@ en toont het dashboard "OFFLINE".
 
 **[20:56:10]** Ik ben voor de Lieferber en dan vraag ik het colletje werd houden klovertom, die is snel te bandwoorden. Daarnaag kijk ik even in IKARMAL of u nog een vraag heest en anders of er nog aansluiten het uit van de andere vraksiesbofd is of nog een aafwullen de vraag te stellen en daarbij in de geoteer. En ik kan hem al, hoe heen ik vooral? Nou voorzitter, ik was eigenlijk voornemers om dit inledend een klein beetje toe te lichten wat van contexten voorzien of wordt dat...
 
+**[20:56:40]** Dat voort niet verlangt, we doen normaal gesproken even de vragen ook om ur zelfs spreken te besparen. En dat vindt de herboden naar uw fractie voorzitter, denk je weer prettig. Ja, goed, woord is aan het colletje, de Eerklavond. Dank u wel voorzitter. Anders op de eerste vraag, ja, dat klopt. Ja, ik kan hem niet mooier maken dan dat. Tweede vraag. Er heeft overleg plaats gevonden met schoolbestuur en...
+
+**[20:57:10]** En directie, en er is ambtreldig gekeken aan de mogelijkheden voor mede gebruik in een andere school. Het schoolbezoer en de directie geven er de voorker aan om de kinderen binnen het eigen schopgebouw op te vangen. En onderwijs kundig is dat op zich logisch. Gisteren heb ik hiervoor ook een gesprek gevoerd net zowel het bestuur de dichter als leden van de MR. voor nu zal een activiteitere sledge geen lokaal voor kleuters worden ingericht als
+
