@@ -13,6 +13,21 @@ De laptop van de gebruiker draait tijdens de vergadering `START-LIVE.cmd`
 statusbestand `data/zuidplas-live-status.json`. Jouw taak: dat transcript
 doorlopend omzetten in bruikbare aantekeningen in `data/zuidplas-notes.md`.
 
+## Automatische activering
+
+Deze skill wordt óók automatisch gestart door twee Routines (wekkers) op de
+hoofdsessie: wekelijks op dinsdagavond ~19:57 NL (start autostart-taak op de
+laptop) en elk uur als vangnet. Gedrag bij automatische activering:
+
+- **Niets live én niets onverwerkt** → antwoord met één korte regel en stop.
+  Geen commits, geen extra wekkers, geen lange uitleg.
+- **Wel live of onverwerkt transcript** → draai de lus hieronder. Meld de
+  gebruiker pas iets bij de eindsamenvatting (of bij een echt probleem) —
+  niet bij elke ronde.
+- "Live" = `zuidplas-live-status.json` met updatedAt < 10 min en running
+  true, óf de bytelengte van `zuidplas-live.md` is groter dan de
+  `transcript-offset` in `zuidplas-notes.md`.
+
 ## Werkwijze
 
 1. **Start**: `git fetch origin claude/read-other-chat-3rr64o` en checkout
