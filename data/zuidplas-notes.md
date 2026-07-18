@@ -1,12 +1,35 @@
-<!-- bijgewerkt: 2026-07-15T20:12:00Z -->
-<!-- transcript-offset: 5382 -->
+<!-- bijgewerkt: 2026-07-17T21:45:00Z -->
+<!-- transcript-offset: 10233 -->
 
 # AI-aantekeningen — raadsvergadering (opname, gevolgd 15-7-2026)
 
 ## Nu besproken
-D66 is begonnen aan zijn bijdrage over de zomernota, met focus op de
-financiën: het begrotingstekort loopt op tot € 7,6 miljoen. (De brug is
-daarna gestopt — dit was een testfragment.)
+Geen live vergadering. Laatst verwerkt: opening en vragenkwartier van de
+raadsvergadering (opname 14 juli, gevolgd op 16 juli).
+
+### Opening van de vergadering (opname 14 juli)
+[20:54] De voorzitter opent met een moment stilte, heet publiek en kijkers
+thuis welkom en kondigt de hoofdonderwerpen aan: de zomernota en de
+toelating/beëdiging van twee nieuwe raadsleden. Twee afmeldingen (namen
+deels onduidelijk in transcript: dhr. Versluis en vermoedelijk dhr.
+Verdoold); een fractievoorzitterschap wordt vandaag waargenomen.
+
+### Vragenkwartier: noodlokaal school (VVD)
+[20:56–20:59] Wethouder antwoordt op VVD-vragen over vertraagde
+onderwijshuisvesting: er is overleg geweest met schoolbestuur en directie;
+de school vangt kinderen liever binnen het eigen gebouw op; voor nu wordt
+een activiteitenruimte niet als kleuterlokaal ingericht (formulering
+onduidelijk in transcript). De vergunningaanvraag loopt en de noodunit is
+besteld; streven is plaatsing uiterlijk laatste kwartaal, liefst eerder.
+Opvallend: de wethouder zegt nadrukkelijk — mede vanwege externe kritiek op
+schoolbestuur en directeur — dat de vertraging "primair aan onze kant"
+(de gemeente) ligt. Extra kosten zijn bekend. Vervolgvraag VVD: geldt
+dezelfde aandacht ook voor andere scholen met hetzelfde probleem?
+
+### Vragenkwartier: boottoerisme (Platform Zuidplas)
+[21:00] Tweede set mondelinge vragen, van Platform Zuidplas, over de
+situatie rond watertoegangen in relatie tot boottoerisme; wethouder Van
+Rijne antwoordt (inhoud niet meer opgenomen — brug stopte hier).
 
 ## Samenvatting tot nu toe
 
